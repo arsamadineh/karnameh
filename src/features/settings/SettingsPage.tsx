@@ -151,11 +151,11 @@ const SettingsPage: Component = () => {
       
       {/* Theme Card */}
       <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
-        <h3 style={{ 'font-size': '1.05rem', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
+        <h3 style={{ 'font-size': 'var(--text-h2-size)', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
           <IconPalette style={{ width: '20px', height: '20px', color: 'var(--color-primary)' }} />
           ظاهر و تم برنامه
         </h3>
-        <p style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>پوسته نرم‌افزار را متناسب با سلیقه خود تغییر دهید.</p>
+        <p style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>پوسته نرم‌افزار را متناسب با سلیقه خود تغییر دهید.</p>
         
         <div style={{ display: 'flex', gap: 'var(--space-3)', 'margin-top': 'var(--space-2)' }}>
           <button 
@@ -210,22 +210,22 @@ const SettingsPage: Component = () => {
 
       {/* DB Card */}
       <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
-        <h3 style={{ 'font-size': '1.05rem', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
+        <h3 style={{ 'font-size': 'var(--text-h2-size)', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
           <IconDatabase style={{ width: '20px', height: '20px', color: 'var(--color-primary)' }} />
           پشتیبان‌گیری و پایگاه داده
         </h3>
-        <p style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>
+        <p style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>
           اطلاعات برنامه در یک فایل محلی SQLite ذخیره می‌شوند. می‌توانید کل اطلاعات را صادر کنید.
         </p>
 
-        <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)', 'font-size': '0.9rem', 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)', padding: 'var(--space-3)', 'border-radius': 'var(--radius-md)', 'margin': 'var(--space-2) 0' }}>
+        <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)', 'font-size': 'var(--text-body-size)', 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)', padding: 'var(--space-3)', 'border-radius': 'var(--radius-md)', 'margin': 'var(--space-2) 0' }}>
           <div style={{ display: 'flex', 'justify-content': 'space-between' }}>
             <span style={{ color: 'var(--color-text-muted)' }}>نوع موتور ذخیره‌سازی:</span>
             <span style={{ 'font-weight': 600 }}>SQLite 3 (محلی)</span>
           </div>
           <div style={{ display: 'flex', 'justify-content': 'space-between', 'margin-top': '4px' }}>
             <span style={{ color: 'var(--color-text-muted)' }}>محل ذخیره فایل:</span>
-            <span style={{ 'font-weight': 600, 'font-size': '0.8rem', 'direction': 'ltr' }}>~/.local/share/karnameh/karnameh.db</span>
+            <span style={{ 'font-weight': 600, 'font-size': 'var(--text-xs-size)', 'direction': 'ltr' }}>~/.local/share/karnameh/karnameh.db</span>
           </div>
         </div>
 
@@ -245,33 +245,33 @@ const SettingsPage: Component = () => {
 
       {/* Stats Summary Card */}
       <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
-        <h3 style={{ 'font-size': '1.05rem', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
+        <h3 style={{ 'font-size': 'var(--text-h2-size)', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
           <IconDashboard style={{ width: '20px', height: '20px', color: 'var(--color-primary)' }} />
           آمار کلی ذخیره‌شده
         </h3>
         
         <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-3)', 'margin-top': 'var(--space-1)' }}>
           <div style={{ padding: 'var(--space-3)', 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)', 'border-radius': 'var(--radius-md)' }}>
-            <span style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>تعداد مشتریان:</span>
-            <h4 style={{ 'font-size': '1.5rem', 'font-weight': 700, color: 'var(--color-primary)', 'margin-top': '2px' }}>
+            <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)' }}>تعداد مشتریان:</span>
+            <h4 class="stat-tile" style={{ color: 'var(--color-primary)' }}>
               {formatPersianNumber((clients() || []).length)}
             </h4>
           </div>
           <div style={{ padding: 'var(--space-3)', 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)', 'border-radius': 'var(--radius-md)' }}>
-            <span style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>تعداد پروژه‌ها:</span>
-            <h4 style={{ 'font-size': '1.5rem', 'font-weight': 700, color: 'var(--color-success)', 'margin-top': '2px' }}>
+            <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)' }}>تعداد پروژه‌ها:</span>
+            <h4 class="stat-tile" style={{ color: 'var(--color-success)' }}>
               {formatPersianNumber((projects() || []).length)}
             </h4>
           </div>
           <div style={{ padding: 'var(--space-3)', 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)', 'border-radius': 'var(--radius-md)' }}>
-            <span style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>تعداد وظایف:</span>
-            <h4 style={{ 'font-size': '1.5rem', 'font-weight': 700, color: 'var(--color-warning)', 'margin-top': '2px' }}>
+            <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)' }}>تعداد وظایف:</span>
+            <h4 class="stat-tile" style={{ color: 'var(--color-warning)' }}>
               {formatPersianNumber((tasks() || []).length)}
             </h4>
           </div>
           <div style={{ padding: 'var(--space-3)', 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)', 'border-radius': 'var(--radius-md)' }}>
-            <span style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>چک‌لیست‌های ثبت‌شده:</span>
-            <h4 style={{ 'font-size': '1.5rem', 'font-weight': 700, color: 'var(--color-secondary)', 'margin-top': '2px' }}>
+            <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)' }}>چک‌لیست‌های ثبت‌شده:</span>
+            <h4 class="stat-tile" style={{ color: 'var(--color-secondary)' }}>
               {formatPersianNumber((checklists() || []).length)}
             </h4>
           </div>
@@ -279,18 +279,18 @@ const SettingsPage: Component = () => {
       </div>
 
       {/* About & Updates Card */}
-      <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)', 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>
+      <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)', 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>
         <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
           <div>
-            <h4 style={{ 'font-size': '1rem', 'font-weight': 700, color: 'var(--color-text)', margin: 0 }}>کارنامه - نسخه ۱.۰.۰-beta</h4>
+            <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 700, color: 'var(--color-text)', margin: 0 }}>کارنامه - نسخه ۱.۰.۰-beta</h4>
             <p style={{ margin: '4px 0 0 0' }}>فونت مورد استفاده: وزیرمتن (Vazirmatn) اثر صابر راستی‌کردار</p>
             <p style={{ margin: '4px 0 0 0' }}>© تمامی حقوق محفوظ است.</p>
           </div>
           <div style={{ display: 'flex', 'flex-direction': 'column', 'align-items': 'flex-end', gap: 'var(--space-2)' }}>
-            <button class="btn-primary" onClick={handleManualUpdateCheck} disabled={isCheckingUpdate()} style={{ 'font-size': '0.8rem', padding: '6px 12px' }}>
+            <button class="btn-primary" onClick={handleManualUpdateCheck} disabled={isCheckingUpdate()} style={{ 'font-size': 'var(--text-xs-size)', padding: '6px 12px' }}>
               {isCheckingUpdate() ? 'در حال بررسی...' : 'بررسی بروزرسانی'}
             </button>
-            {updateMessage() && <span style={{ 'font-size': '0.75rem', color: 'var(--color-primary)' }}>{updateMessage()}</span>}
+            {updateMessage() && <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-primary)' }}>{updateMessage()}</span>}
           </div>
         </div>
       </div>

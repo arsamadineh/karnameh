@@ -76,7 +76,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
           <div style={{ display: 'flex', 'align-items': 'center', gap: 'var(--space-3)' }}>
             <IconLogo />
             <span style={{ 
-              'font-size': '1.25rem', 
+              'font-size': 'var(--text-h1-size)', 
               color: 'var(--color-text)', 
               'font-weight': 700, 
               'letter-spacing': '-0.5px',
@@ -131,7 +131,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
                   >
                     <Icon class="sidebar-icon" />
                     <span style={{
-                      'font-size': '0.95rem',
+                      'font-size': 'var(--text-body-size)',
                       opacity: isSidebarCollapsed() ? 0 : 1,
                       transform: isSidebarCollapsed() ? 'translateX(10px)' : 'translateX(0)',
                       transition: 'opacity 200ms ease-in-out, transform 200ms ease-in-out',
@@ -183,8 +183,8 @@ const Sidebar: Component<SidebarProps> = (props) => {
             'justify-content': 'center',
             color: 'white',
             'font-weight': 'bold',
-            'font-size': '1.1rem',
-            'flex-shrink': 0
+              'font-size': 'var(--text-body-size)',
+              'flex-shrink': 0
           }}>
             آ
           </div>
@@ -196,10 +196,10 @@ const Sidebar: Component<SidebarProps> = (props) => {
             transition: 'opacity 200ms ease-in-out, width 200ms ease-in-out',
             'white-space': 'nowrap'
           }}>
-            <h4 style={{ 'font-size': '0.9rem', 'font-weight': 600, color: 'var(--color-text)', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
+            <h4 style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 600, color: 'var(--color-text)', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
               آرسام
             </h4>
-            <p style={{ 'font-size': '0.75rem', color: 'var(--color-text-muted)' }}>مدیر سیستم</p>
+            <p style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)' }}>مدیر سیستم</p>
           </div>
         </div>
 
@@ -230,7 +230,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
               style={{ 
                 'text-align': 'right', 
                 padding: 'var(--space-2) var(--space-3)', 
-                'font-size': '0.85rem', 
+                'font-size': 'var(--text-sm-size)', 
                 'border-radius': 'var(--radius-sm)',
                 width: '100%',
                 display: 'flex',
@@ -247,7 +247,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
               style={{ 
                 'text-align': 'right', 
                 padding: 'var(--space-2) var(--space-3)', 
-                'font-size': '0.85rem', 
+                'font-size': 'var(--text-sm-size)', 
                 'border-radius': 'var(--radius-sm)',
                 color: 'var(--color-danger)',
                 width: '100%',

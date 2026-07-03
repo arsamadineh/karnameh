@@ -120,6 +120,33 @@ input, textarea, select {
   flex-direction: column;
   overflow: hidden;
   background-color: var(--color-bg);
+  min-width: 0; /* allow children (sidebar + main) to shrink correctly in flex */
+}
+
+/* Scrollable content region used by the adaptive shell in App.tsx. */
+.content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--color-bg);
+  -webkit-overflow-scrolling: touch;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.content-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-gap);
+  width: 100%;
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: var(--layout-page-padding);
+}
+
+/* When the desktop sidebar is present, drop the centered max-width cap so the
+   sidebar + content fill the window naturally. Triggered by the
+   .has-sidebar class on the shell container. */
+.has-sidebar .content-inner {
+  max-width: none;
 }
 
 /* ─── GRID SYSTEMS ─── */
@@ -133,8 +160,26 @@ input, textarea, select {
   grid-template-columns: repeat(3, 1fr);
   gap: var(--layout-gap);
 }
-@media (max-width: 1024px) { .grid-kanban  { grid-template-columns: 1fr; overflow-y: auto; } }
-@media (max-width: 768px)  { .grid-dashboard { grid-template-columns: 1fr; } .mobile-col { flex-direction: column !important; } .mobile-panel-list { width: 100% !important; border-left: none !important; padding-left: 0 !important; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-4); flex-shrink: 0; } }
+/* Tablet: collapse the kanban board to a single scrollable column. */
+@media (max-width: 1024px) {
+  .grid-kanban { grid-template-columns: 1fr; overflow-y: auto; }
+}
+/* Phone: tighten dashboard cards so they fit narrow viewports. */
+@media (max-width: 768px) {
+  .grid-dashboard { grid-template-columns: 1fr; }
+  .mobile-col { flex-direction: column !important; }
+  .mobile-panel-list {
+    width: 100% !important;
+    border-left: none !important;
+    padding-left: 0 !important;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-4);
+    flex-shrink: 0;
+  }
+}
+@media (max-width: 480px) {
+  .grid-dashboard { grid-template-columns: 1fr; }
+}
 
 .flex-list  { display: flex; flex-direction: column; gap: var(--space-2); }
 .flex-row   { display: flex; align-items: center; gap: var(--space-3); }
@@ -381,5 +426,111 @@ input[type="number"] { -moz-appearance: textfield; }
     animation-duration: 1ms !important;
     transition-duration: 0s !important;
     transition-delay: 0s !important;
+  }
+}
+
+/* ─── FLUID STAT NUMBERS ───
+   Used for dashboard hero figures so they scale down on phones instead of
+   overflowing cards. Replaces hardcoded inline 2.8rem / 1.8rem values. */
+.stat-hero {
+  font-size: clamp(2rem, 1.4rem + 2.5vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.stat-title {
+  font-size: clamp(1.3rem, 1.05rem + 1vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+/* Compact stat tiles (settings summary, inline metrics). */
+.stat-tile {
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: 2px;
+}
+
+/* ─── BOTTOM NAVIGATION ─── */
+.bottom-nav {
+  width: 100%;
+  background-color: var(--color-bg-translucent);
+  backdrop-filter: var(--blur-lg);
+  -webkit-backdrop-filter: var(--blur-lg);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 var(--space-2);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-2));
+  padding-top: var(--space-1);
+  height: 72px;
+  z-index: 50;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
+}
+.bottom-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  background-color: transparent;
+  position: relative;
+  transition: transform var(--transition-fast);
+}
+.bottom-nav-pill {
+  position: absolute;
+  top: 4px;
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+  background-color: transparent;
+  z-index: 0;
+  transition: background-color var(--transition-fast), transform var(--transition-spring), opacity var(--transition-fast);
+  transform: scale(0.5);
+  opacity: 0;
+}
+.bottom-nav-pill.is-active {
+  background-color: var(--color-primary-muted);
+  transform: scale(1);
+  opacity: 1;
+}
+.bottom-nav-icon {
+  width: 22px;
+  height: 22px;
+  z-index: 1;
+  transition: color var(--transition-fast);
+}
+.bottom-nav-label {
+  font-size: var(--text-xs-size);
+  z-index: 1;
+  transition: color var(--transition-fast);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* Phones: taller nav for comfortable thumb reach; compact phones drop labels
+   (handled in JS via isCompactNav) and use tighter spacing. */
+@media (max-width: 768px) {
+  .bottom-nav { height: 80px; }
+}
+@media (max-width: 480px) {
+  .bottom-nav { height: 64px; padding-inline: 0; }
+  .bottom-nav-btn { gap: 2px; height: 48px; }
+  .bottom-nav-icon { width: 20px; height: 20px; }
+}
+
+/* ─── RESPONSIVE HEADER & NAV TUNING ───
+   On phones the header hugs the top notch (safe-area inset) and the title
+   shrinks so the search + profile actions always fit. */
+@media (max-width: 480px) {
+  .layout-container > header h1,
+  .content-inner h2 {
+    font-size: var(--text-h2-size);
   }
 }

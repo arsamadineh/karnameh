@@ -53,7 +53,7 @@ export const Modal: Component<ModalProps> = (props) => {
             }}
           >
             <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-              <h2 style={{ 'font-size': '1.15rem', 'font-weight': 700, margin: 0 }}>{props.title}</h2>
+              <h2 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700, margin: 0 }}>{props.title}</h2>
               <button 
                 onClick={props.onClose} 
                 class="btn-secondary" 
@@ -72,7 +72,7 @@ export const Modal: Component<ModalProps> = (props) => {
               </button>
             </div>
             
-            <div style={{ color: 'var(--color-text-muted)', 'font-size': '0.95rem', 'line-height': 1.6 }}>
+            <div style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-body-size)', 'line-height': 1.6 }}>
               {props.children}
             </div>
 

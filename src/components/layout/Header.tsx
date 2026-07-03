@@ -39,14 +39,14 @@ const Header: Component<HeaderProps> = (props) => {
       'align-items': 'center',
       'justify-content': 'space-between',
       padding: '0 var(--space-4)',
-      'background-color': 'rgba(var(--color-bg), 0.8)',
+      'background-color': 'var(--color-bg-translucent)',
       'backdrop-filter': 'var(--blur-md)',
       '-webkit-backdrop-filter': 'var(--blur-md)',
       'z-index': 10
     }}>
       <div style={{ display: 'flex', 'align-items': 'center', gap: 'var(--space-3)' }}>
         <IconLogo style={{ width: '28px', height: '28px' }} />
-        <h1 style={{ 'font-size': '1.25rem', 'font-weight': 700, color: 'var(--color-text)', 'margin-right': '4px' }}>
+        <h1 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700, color: 'var(--color-text)', 'margin-right': '4px' }}>
           {viewTitles[props.title] || props.title}
         </h1>
       </div>
@@ -84,7 +84,7 @@ const Header: Component<HeaderProps> = (props) => {
               'justify-content': 'center',
               color: 'white',
               'font-weight': 'bold',
-              'font-size': '1.1rem',
+              'font-size': 'var(--text-body-size)',
               border: '2px solid transparent',
               transition: 'all var(--transition-fast)'
             }}
@@ -114,14 +114,14 @@ const Header: Component<HeaderProps> = (props) => {
             class="animate-fade-in"
             >
               <div style={{ padding: '8px 12px', 'border-bottom': '1px solid var(--color-border)', 'margin-bottom': '4px' }}>
-                <p style={{ 'font-size': '0.9rem', 'font-weight': 600, color: 'var(--color-text)' }}>آرسام</p>
-                <p style={{ 'font-size': '0.75rem', color: 'var(--color-text-muted)' }}>مدیر سیستم</p>
+                <p style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 600, color: 'var(--color-text)' }}>آرسام</p>
+                <p style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)' }}>مدیر سیستم</p>
               </div>
-              <button class="sidebar-menu-item" style={{ 'text-align': 'right', padding: '8px 12px', 'font-size': '0.85rem', 'border-radius': 'var(--radius-sm)', width: '100%', display: 'flex', 'align-items': 'center', gap: '8px' }}>
+              <button class="sidebar-menu-item" style={{ 'text-align': 'right', padding: '8px 12px', 'font-size': 'var(--text-sm-size)', 'border-radius': 'var(--radius-sm)', width: '100%', display: 'flex', 'align-items': 'center', gap: '8px' }}>
                 <IconUser style={{ width: '16px', height: '16px' }} />
                 مشاهده پروفایل
               </button>
-              <button class="sidebar-menu-item" style={{ 'text-align': 'right', padding: '8px 12px', 'font-size': '0.85rem', 'border-radius': 'var(--radius-sm)', color: 'var(--color-danger)', width: '100%', display: 'flex', 'align-items': 'center', gap: '8px' }}>
+              <button class="sidebar-menu-item" style={{ 'text-align': 'right', padding: '8px 12px', 'font-size': 'var(--text-sm-size)', 'border-radius': 'var(--radius-sm)', color: 'var(--color-danger)', width: '100%', display: 'flex', 'align-items': 'center', gap: '8px' }}>
                 <IconLogOut style={{ width: '16px', height: '16px' }} />
                 خروج از برنامه
               </button>

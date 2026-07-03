@@ -1,4 +1,5 @@
 import { createSignal } from 'solid-js';
+import { createMediaQuery } from '../lib/media';
 
 // Navigation & Active States
 export const [currentView, setCurrentView] = createSignal<string>('dashboard');
@@ -11,6 +12,18 @@ export const [searchQuery, setSearchQuery] = createSignal<string>('');
 
 // Sidebar Collapse State
 export const [isSidebarCollapsed, setIsSidebarCollapsed] = createSignal<boolean>(false);
+
+// ─── Viewport / responsive breakpoints ───
+// Single source of truth for adaptive layout decisions. Matches the CSS
+// breakpoints in src/styles/global.css (mobile <768, tablet 768–1023, desktop ≥1024).
+export const isMobile = createMediaQuery('(max-width: 767px)');
+export const isTablet = createMediaQuery('(min-width: 768px) and (max-width: 1023px)');
+export const isDesktop = createMediaQuery('(min-width: 1024px)');
+// The desktop sidebar is shown from the tablet breakpoint up on large screens;
+// phones and small tablets use the bottom navigation instead.
+export const showSidebar = createMediaQuery('(min-width: 1024px)');
+// Extra-narrow phones drop nav labels to fit six items comfortably.
+export const isCompactNav = createMediaQuery('(max-width: 380px)');
 
 // Refresh signals to trigger resource updates in separate modules
 const [clientRefreshTrigger, setClientRefreshTrigger] = createSignal(0);

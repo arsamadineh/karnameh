@@ -18,8 +18,8 @@ const DashboardPage: Component = () => {
       {/* Welcome message */}
       <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
         <div>
-          <h2 style={{ 'font-size': '1.8rem', 'font-weight': 700, 'margin-bottom': 'var(--space-2)' }}>سلام آرسام 👋</h2>
-          <p style={{ color: 'var(--color-text-muted)', 'font-size': '1rem' }}>امروز {formatJalaliDate(new Date())} است.</p>
+          <h2 class="stat-title" style={{ 'margin-bottom': 'var(--space-2)' }}>سلام آرسام 👋</h2>
+          <p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-body-size)' }}>امروز {formatJalaliDate(new Date())} است.</p>
         </div>
       </div>
 
@@ -36,12 +36,12 @@ const DashboardPage: Component = () => {
             <span style={{ color: 'var(--color-text-muted)', 'font-weight': 500 }}>تعداد مشتریان</span>
             <IconUsers style={{ width: '22px', height: '22px', color: 'var(--color-primary)' }} />
           </div>
-          <p style={{ 'font-size': '2.8rem', 'font-weight': 700, color: 'var(--color-primary)', 'line-height': 1 }}>
+          <p class="stat-hero" style={{ color: 'var(--color-primary)' }}>
             <Show when={clients()} fallback={formatPersianNumber(0)}>
               {formatPersianNumber((clients() || []).length)}
             </Show>
           </p>
-          <span style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>مشتریان تجاری ثبت‌شده</span>
+          <span style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مشتریان تجاری ثبت‌شده</span>
         </div>
 
         {/* Projects Card */}
@@ -54,12 +54,12 @@ const DashboardPage: Component = () => {
             <span style={{ color: 'var(--color-text-muted)', 'font-weight': 500 }}>پروژه‌های فعال</span>
             <IconProjects style={{ width: '22px', height: '22px', color: 'var(--color-success)' }} />
           </div>
-          <p style={{ 'font-size': '2.8rem', 'font-weight': 700, color: 'var(--color-success)', 'line-height': 1 }}>
+          <p class="stat-hero" style={{ color: 'var(--color-success)' }}>
             <Show when={projects()} fallback={formatPersianNumber(0)}>
               {formatPersianNumber((projects() || []).filter((p: any) => p.status === 'active').length)}
             </Show>
           </p>
-          <span style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>از کل {formatPersianNumber((projects() || []).length)} پروژه</span>
+          <span style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>از کل {formatPersianNumber((projects() || []).length)} پروژه</span>
         </div>
 
         {/* Tasks Card */}
@@ -72,12 +72,12 @@ const DashboardPage: Component = () => {
             <span style={{ color: 'var(--color-text-muted)', 'font-weight': 500 }}>وظایف در انتظار</span>
             <IconTasks style={{ width: '22px', height: '22px', color: 'var(--color-warning)' }} />
           </div>
-          <p style={{ 'font-size': '2.8rem', 'font-weight': 700, color: 'var(--color-warning)', 'line-height': 1 }}>
+          <p class="stat-hero" style={{ color: 'var(--color-warning)' }}>
             <Show when={tasks()} fallback={formatPersianNumber(0)}>
               {formatPersianNumber((tasks() || []).filter((t: any) => t.status === 'todo').length)}
             </Show>
           </p>
-          <span style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>وظایف انجام‌نشده در کل سیستم</span>
+          <span style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>وظایف انجام‌نشده در کل سیستم</span>
         </div>
       </div>
 
@@ -86,13 +86,13 @@ const DashboardPage: Component = () => {
         
         {/* Active Projects Widget */}
         <div class="premium-card animate-slide-up" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)', 'animation-delay': '300ms' }}>
-          <h3 style={{ 'font-size': '1.1rem', 'font-weight': 600, border: 'none', 'padding-bottom': '2px', display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
+          <h3 style={{ 'font-size': 'var(--text-h2-size)', 'font-weight': 600, border: 'none', 'padding-bottom': '2px', display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
             <IconProjects style={{ width: '20px', height: '20px', color: 'var(--color-success)' }} />
             پروژه‌های فعال اخیر
           </h3>
           <Show 
             when={activeProjects().length > 0} 
-            fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': '0.9rem' }}>هیچ پروژه فعالی وجود ندارد.</p>}
+            fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-body-size)' }}>هیچ پروژه فعالی وجود ندارد.</p>}
           >
             <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
               <For each={activeProjects().slice(0, 4)}>
@@ -117,7 +117,7 @@ const DashboardPage: Component = () => {
                   >
                     <div style={{ display: 'flex', 'align-items': 'center', gap: 'var(--space-3)' }}>
                       <div style={{ width: '8px', height: '8px', 'border-radius': 'var(--radius-round)', 'background-color': project.color || 'var(--color-primary)' }} />
-                      <span style={{ 'font-weight': 600, 'font-size': '0.95rem' }}>{project.title}</span>
+                      <span style={{ 'font-weight': 600, 'font-size': 'var(--text-body-size)' }}>{project.title}</span>
                     </div>
                     <span class="badge badge-low" style={{ 'background-color': 'var(--color-success-muted)', color: 'var(--color-success)' }}>
                       فعال
@@ -131,13 +131,13 @@ const DashboardPage: Component = () => {
 
         {/* Pending Tasks Widget */}
         <div class="premium-card animate-slide-up" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)', 'animation-delay': '400ms' }}>
-          <h3 style={{ 'font-size': '1.1rem', 'font-weight': 600, border: 'none', 'padding-bottom': '2px', display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
+          <h3 style={{ 'font-size': 'var(--text-h2-size)', 'font-weight': 600, border: 'none', 'padding-bottom': '2px', display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
             <IconTasks style={{ width: '20px', height: '20px', color: 'var(--color-warning)' }} />
             وظایف معوقه و جدید
           </h3>
           <Show 
             when={todoTasks().length > 0} 
-            fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': '0.9rem' }}>همه کارها انجام شده است!</p>}
+            fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-body-size)' }}>همه کارها انجام شده است!</p>}
           >
             <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
               <For each={todoTasks().slice(0, 4)}>
@@ -158,8 +158,8 @@ const DashboardPage: Component = () => {
                     onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--color-border)'}
                   >
                     <div style={{ display: 'flex', 'flex-direction': 'column', gap: '2px' }}>
-                      <span style={{ 'font-weight': 600, 'font-size': '0.95rem' }}>{task.title}</span>
-                      <span style={{ 'font-size': '0.75rem', color: 'var(--color-text-muted)' }}>
+                      <span style={{ 'font-weight': 600, 'font-size': 'var(--text-body-size)' }}>{task.title}</span>
+                      <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)' }}>
                         {task.due_date ? `مهلت: ${formatJalaliDate(task.due_date)}` : 'بدون زمان مهلت'}
                       </span>
                     </div>

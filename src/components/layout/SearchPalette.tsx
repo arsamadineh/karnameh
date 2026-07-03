@@ -206,7 +206,7 @@ const SearchPalette: Component = () => {
             padding: 'var(--space-4) var(--space-5)',
             'border-bottom': '1px solid var(--color-border)'
           }}>
-            <span style={{ 'font-size': '1.3rem' }}>🔍</span>
+            <span style={{ 'font-size': 'var(--text-h1-size)' }}>🔍</span>
             <input 
               ref={inputRef}
               type="text"
@@ -218,14 +218,14 @@ const SearchPalette: Component = () => {
               }}
               style={{
                 flex: 1,
-                'font-size': '1rem',
+                'font-size': 'var(--text-body-size)',
                 color: 'var(--color-text)'
               }}
             />
             <button 
               onClick={() => setSearchPaletteOpen(false)}
               style={{
-                'font-size': '0.75rem',
+                'font-size': 'var(--text-xs-size)',
                 color: 'var(--color-text-muted)',
                 padding: '2px 8px',
                 'border-radius': 'var(--radius-sm)',
@@ -276,22 +276,22 @@ const SearchPalette: Component = () => {
                             display: 'flex',
                             'align-items': 'center',
                             'justify-content': 'center',
-                            'font-size': '0.85rem'
+                            'font-size': 'var(--text-sm-size)'
                           }}>
                             {item.type === 'client' ? '👥' : item.type === 'project' ? '📁' : '✅'}
                           </div>
                           <div>
-                            <div style={{ 'font-weight': 600, color: isSelected() ? 'var(--color-primary)' : 'var(--color-text)', 'font-size': '0.95rem' }}>
+                            <div style={{ 'font-weight': 600, color: isSelected() ? 'var(--color-primary)' : 'var(--color-text)', 'font-size': 'var(--text-body-size)' }}>
                               {item.title}
                             </div>
-                            <div style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)', 'margin-top': '2px' }}>
+                            <div style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)', 'margin-top': '2px' }}>
                               {item.subtitle}
                             </div>
                           </div>
                         </div>
                         
                         <Show when={isSelected()}>
-                          <span style={{ 'font-size': '0.8rem', color: 'var(--color-primary)' }}>↵ باز کردن</span>
+                          <span style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-primary)' }}>↵ باز کردن</span>
                         </Show>
                       </button>
                     );
@@ -308,7 +308,7 @@ const SearchPalette: Component = () => {
             'border-top': '1px solid var(--color-border)',
             display: 'flex',
             'justify-content': 'space-between',
-            'font-size': '0.75rem',
+            'font-size': 'var(--text-xs-size)',
             color: 'var(--color-text-muted)'
           }}>
             <span>ناوبری با کلیدهای جهتی ↑↓</span>

@@ -127,7 +127,7 @@ export const CustomSelect: Component<CustomSelectProps> = (props) => {
                   width: '100%',
                   padding: 'var(--space-2) var(--space-3)',
                   'text-align': 'right',
-                  'font-size': '0.9rem',
+                  'font-size': 'var(--text-body-size)',
                   'border-radius': 'var(--radius-sm)',
                   color: isSelected() ? 'var(--color-primary)' : 'var(--color-text)',
                   'background-color': isSelected() ? 'rgba(255, 255, 255, 0.05)' : 'transparent',

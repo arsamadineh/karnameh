@@ -149,7 +149,7 @@ const ClientsPage: Component = () => {
         {/* Search & Add Button */}
         <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
           <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-            <h2 style={{ 'font-size': '1.15rem', 'font-weight': 700 }}>مشتریان</h2>
+            <h2 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700 }}>مشتریان</h2>
             <button 
               onClick={() => {
                 setIsAdding(true);
@@ -157,7 +157,7 @@ const ClientsPage: Component = () => {
                 clearForm();
               }}
               class="btn-primary"
-              style={{ padding: '4px 10px', 'font-size': '0.85rem' }}
+              style={{ padding: '4px 10px', 'font-size': 'var(--text-sm-size)' }}
             >
               افزودن +
             </button>
@@ -169,14 +169,14 @@ const ClientsPage: Component = () => {
             value={searchQuery()}
             onInput={(e) => setSearchQuery(e.currentTarget.value)}
             class="premium-input"
-            style={{ padding: '8px 12px', 'font-size': '0.85rem' }}
+            style={{ padding: '8px 12px', 'font-size': 'var(--text-sm-size)' }}
           />
         </div>
 
         {/* List Content */}
         <div style={{ flex: 1, 'overflow-y': 'auto', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)' }}>
-          <Show when={clients()} fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': '0.9rem' }}>در حال بارگذاری...</p>}>
-            <Show when={filteredClients().length > 0} fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': '0.9rem', 'text-align': 'center', 'padding-top': 'var(--space-8)' }}>مشتری یافت نشد</p>}>
+          <Show when={clients()} fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-body-size)' }}>در حال بارگذاری...</p>}>
+            <Show when={filteredClients().length > 0} fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-body-size)', 'text-align': 'center', 'padding-top': 'var(--space-8)' }}>مشتری یافت نشد</p>}>
               <For each={filteredClients()}>
                 {(client) => {
                   const isSelected = () => selectedClientId() === client.id;
@@ -210,15 +210,15 @@ const ClientsPage: Component = () => {
                         width: '32px', height: '32px', 'border-radius': 'var(--radius-round)',
                         'background-color': client.color || 'var(--color-primary)',
                         display: 'flex', 'align-items': 'center', 'justify-content': 'center',
-                        color: 'white', 'font-weight': 'bold', 'font-size': '0.95rem'
+                        color: 'white', 'font-weight': 'bold', 'font-size': 'var(--text-body-size)'
                       }}>
                         {client.name.charAt(0)}
                       </div>
                       <div style={{ flex: 1, overflow: 'hidden' }}>
-                        <div style={{ 'font-weight': 600, 'font-size': '0.9rem', color: isSelected() ? 'var(--color-primary)' : 'var(--color-text)', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
+                        <div style={{ 'font-weight': 600, 'font-size': 'var(--text-body-size)', color: isSelected() ? 'var(--color-primary)' : 'var(--color-text)', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
                           {client.name}
                         </div>
-                        <div style={{ 'font-size': '0.75rem', color: 'var(--color-text-muted)', 'margin-top': '2px' }}>
+                        <div style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)', 'margin-top': '2px' }}>
                           {client.phone ? formatPersianNumber(client.phone) : 'بدون شماره'}
                         </div>
                       </div>
@@ -237,27 +237,27 @@ const ClientsPage: Component = () => {
         {/* CASE 1: Adding a Client */}
         <Show when={isAdding()}>
           <div class="premium-card animate-slide-up" style={{ 'max-width': '600px', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-5)' }}>
-            <h3 style={{ 'font-size': '1.15rem', 'font-weight': 700 }}>افزودن مشتری جدید</h3>
+            <h3 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700 }}>افزودن مشتری جدید</h3>
             
             <form onSubmit={handleAddSubmit} style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-4)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>نام مشتری *</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>نام مشتری *</label>
                   <input type="text" value={name()} onInput={e => setName(e.currentTarget.value)} required class="premium-input" placeholder="مثال: شرکت پارس" />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>شماره تماس</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>شماره تماس</label>
                   <input type="text" value={phone()} onInput={e => setPhone(e.currentTarget.value)} class="premium-input" placeholder="مثال: 09123456789" />
                 </div>
               </div>
 
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-4)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>ایمیل</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>ایمیل</label>
                   <input type="email" value={email()} onInput={e => setEmail(e.currentTarget.value)} class="premium-input" placeholder="example@mail.com" />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>رنگ نمایه</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>رنگ نمایه</label>
                   <div style={{ display: 'flex', gap: 'var(--space-2)', 'align-items': 'center', 'margin-top': '4px' }}>
                     <For each={colors}>
                       {(c) => (
@@ -277,12 +277,12 @@ const ClientsPage: Component = () => {
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>آدرس</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>آدرس</label>
                 <input type="text" value={address()} onInput={e => setAddress(e.currentTarget.value)} class="premium-input" placeholder="تهران، خیابان ولیعصر..." />
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>یادداشت‌ها</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>یادداشت‌ها</label>
                 <textarea value={notes()} onInput={e => setNotes(e.currentTarget.value)} class="premium-input" style={{ height: '80px', resize: 'none' }} placeholder="توضیحات تکمیلی..." />
               </div>
 
@@ -297,27 +297,27 @@ const ClientsPage: Component = () => {
         {/* CASE 2: Editing a Client */}
         <Show when={isEditing() && activeClient()}>
           <div class="premium-card animate-slide-up" style={{ 'max-width': '600px', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-5)' }}>
-            <h3 style={{ 'font-size': '1.15rem', 'font-weight': 700 }}>ویرایش مشتری: {activeClient()?.name}</h3>
+            <h3 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700 }}>ویرایش مشتری: {activeClient()?.name}</h3>
             
             <form onSubmit={handleEditSubmit} style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-4)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>نام مشتری *</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>نام مشتری *</label>
                   <input type="text" value={name()} onInput={e => setName(e.currentTarget.value)} required class="premium-input" />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>شماره تماس</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>شماره تماس</label>
                   <input type="text" value={phone()} onInput={e => setPhone(e.currentTarget.value)} class="premium-input" />
                 </div>
               </div>
 
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-4)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>ایمیل</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>ایمیل</label>
                   <input type="email" value={email()} onInput={e => setEmail(e.currentTarget.value)} class="premium-input" />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>رنگ نمایه</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>رنگ نمایه</label>
                   <div style={{ display: 'flex', gap: 'var(--space-2)', 'align-items': 'center', 'margin-top': '4px' }}>
                     <For each={colors}>
                       {(c) => (
@@ -337,12 +337,12 @@ const ClientsPage: Component = () => {
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>آدرس</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>آدرس</label>
                 <input type="text" value={address()} onInput={e => setAddress(e.currentTarget.value)} class="premium-input" />
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>یادداشت‌ها</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>یادداشت‌ها</label>
                 <textarea value={notes()} onInput={e => setNotes(e.currentTarget.value)} class="premium-input" style={{ height: '80px', resize: 'none' }} />
               </div>
 
@@ -367,21 +367,21 @@ const ClientsPage: Component = () => {
                       width: '48px', height: '48px', 'border-radius': 'var(--radius-round)',
                       'background-color': client.color || 'var(--color-primary)',
                       display: 'flex', 'align-items': 'center', 'justify-content': 'center',
-                      color: 'white', 'font-weight': 'bold', 'font-size': '1.3rem'
+                      color: 'white', 'font-weight': 'bold', 'font-size': 'var(--text-h1-size)'
                     }}>
                       {client.name.charAt(0)}
                     </div>
                     <div>
-                      <h3 style={{ 'font-size': '1.3rem', 'font-weight': 700 }}>{client.name}</h3>
-                      <p style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>مشتری تجاری</p>
+                      <h3 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700 }}>{client.name}</h3>
+                      <p style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مشتری تجاری</p>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                    <button onClick={() => setIsEditing(true)} class="btn-secondary" style={{ padding: '6px 12px', 'font-size': '0.85rem' }}>
+                    <button onClick={() => setIsEditing(true)} class="btn-secondary" style={{ padding: '6px 12px', 'font-size': 'var(--text-sm-size)' }}>
                       <IconEdit style={{ width: '16px', height: '16px' }} /> ویرایش
                     </button>
-                    <button onClick={() => handleDeleteConfirm(client.id)} class="btn-secondary" style={{ padding: '6px 12px', 'font-size': '0.85rem', color: 'var(--color-danger)', 'border-color': 'rgba(239, 68, 68, 0.2)' }}>
+                    <button onClick={() => handleDeleteConfirm(client.id)} class="btn-secondary" style={{ padding: '6px 12px', 'font-size': 'var(--text-sm-size)', color: 'var(--color-danger)', 'border-color': 'rgba(239, 68, 68, 0.2)' }}>
                       <IconTrash style={{ width: '16px', height: '16px' }} /> حذف
                     </button>
                   </div>
@@ -393,18 +393,18 @@ const ClientsPage: Component = () => {
                   {/* Right sub-column: Client profile fields & Notes */}
                   <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-6)' }}>
                     <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
-                      <h4 style={{ 'font-size': '1rem', 'font-weight': 600 }}>اطلاعات تماس</h4>
+                      <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 600 }}>اطلاعات تماس</h4>
                       
                       <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
-                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': '0.9rem' }}>
+                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': 'var(--text-body-size)' }}>
                           <span style={{ color: 'var(--color-text-muted)' }}>شماره تماس:</span>
                           <span style={{ 'font-weight': 500 }}>{client.phone ? formatPersianNumber(client.phone) : 'ثبت نشده'}</span>
                         </div>
-                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': '0.9rem' }}>
+                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': 'var(--text-body-size)' }}>
                           <span style={{ color: 'var(--color-text-muted)' }}>ایمیل:</span>
                           <span style={{ 'font-weight': 500 }}>{client.email || 'ثبت نشده'}</span>
                         </div>
-                        <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)', 'font-size': '0.9rem' }}>
+                        <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)', 'font-size': 'var(--text-body-size)' }}>
                           <span style={{ color: 'var(--color-text-muted)' }}>آدرس:</span>
                           <span style={{ 'font-weight': 500, 'margin-top': '2px' }}>{client.address || 'ثبت نشده'}</span>
                         </div>
@@ -412,8 +412,8 @@ const ClientsPage: Component = () => {
                     </div>
 
                     <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
-                      <h4 style={{ 'font-size': '1rem', 'font-weight': 600 }}>یادداشت‌ها</h4>
-                      <p style={{ 'font-size': '0.9rem', 'line-height': 1.6, 'white-space': 'pre-line', color: client.notes ? 'var(--color-text)' : 'var(--color-text-muted)' }}>
+                      <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 600 }}>یادداشت‌ها</h4>
+                      <p style={{ 'font-size': 'var(--text-body-size)', 'line-height': 1.6, 'white-space': 'pre-line', color: client.notes ? 'var(--color-text)' : 'var(--color-text-muted)' }}>
                         {client.notes || 'یادداشتی برای این مشتری ثبت نشده است.'}
                       </p>
                     </div>
@@ -422,18 +422,18 @@ const ClientsPage: Component = () => {
                   {/* Left sub-column: Client stats & Project links */}
                   <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-6)' }}>
                     <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
-                      <h4 style={{ 'font-size': '1rem', 'font-weight': 600 }}>خلاصه وضعیت</h4>
+                      <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 600 }}>خلاصه وضعیت</h4>
                       
                       <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
                         <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-                          <span style={{ 'font-size': '0.9rem', color: 'var(--color-text-muted)' }}>پروژه‌ها:</span>
-                          <span style={{ 'font-size': '1.3rem', 'font-weight': 700, color: 'var(--color-primary)' }}>
+                          <span style={{ 'font-size': 'var(--text-body-size)', color: 'var(--color-text-muted)' }}>پروژه‌ها:</span>
+                          <span style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700, color: 'var(--color-primary)' }}>
                             {formatPersianNumber(clientProjects().length)}
                           </span>
                         </div>
                         <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-                          <span style={{ 'font-size': '0.9rem', color: 'var(--color-text-muted)' }}>بودجه کل:</span>
-                          <span style={{ 'font-size': '1.1rem', 'font-weight': 700, color: 'var(--color-success)' }}>
+                          <span style={{ 'font-size': 'var(--text-body-size)', color: 'var(--color-text-muted)' }}>بودجه کل:</span>
+                          <span style={{ 'font-size': 'var(--text-h2-size)', 'font-weight': 700, color: 'var(--color-success)' }}>
                             {formatPersianNumber(clientTotalBudget().toLocaleString())} ریال
                           </span>
                         </div>
@@ -442,10 +442,10 @@ const ClientsPage: Component = () => {
 
                     {/* Associated project names list */}
                     <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
-                      <h4 style={{ 'font-size': '0.95rem', 'font-weight': 600 }}>پروژه‌های مرتبط</h4>
+                      <h4 style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 600 }}>پروژه‌های مرتبط</h4>
                       <Show 
                         when={clientProjects().length > 0} 
-                        fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': '0.85rem' }}>هیچ پروژه‌ای تعریف نشده است.</p>}
+                        fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-sm-size)' }}>هیچ پروژه‌ای تعریف نشده است.</p>}
                       >
                         <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)' }}>
                           <For each={clientProjects()}>
@@ -456,7 +456,7 @@ const ClientsPage: Component = () => {
                                 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)'
                               }}>
                                 <div style={{ width: '6px', height: '6px', 'border-radius': '50%', 'background-color': p.color }} />
-                                <span style={{ 'font-size': '0.85rem', 'font-weight': 500 }}>{p.title}</span>
+                                <span style={{ 'font-size': 'var(--text-sm-size)', 'font-weight': 500 }}>{p.title}</span>
                               </div>
                             )}
                           </For>
@@ -479,7 +479,7 @@ const ClientsPage: Component = () => {
             color: 'var(--color-text-muted)', gap: 'var(--space-4)'
           }}>
             <IconUsers style={{ width: '64px', height: '64px', opacity: 0.5 }} />
-            <p style={{ 'font-size': '1.05rem', 'font-weight': 500 }}>جهت مشاهده جزئیات، یک مشتری را از لیست انتخاب کنید یا مشتری جدید اضافه کنید.</p>
+            <p style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 500 }}>جهت مشاهده جزئیات، یک مشتری را از لیست انتخاب کنید یا مشتری جدید اضافه کنید.</p>
           </div>
         </Show>
 

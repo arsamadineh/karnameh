@@ -203,7 +203,7 @@ const ProjectsPage: Component = () => {
         {/* Search & Add Button */}
         <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
           <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-            <h2 style={{ 'font-size': '1.15rem', 'font-weight': 700 }}>پروژه‌ها</h2>
+            <h2 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700 }}>پروژه‌ها</h2>
             <button 
               onClick={() => {
                 setIsAdding(true);
@@ -211,7 +211,7 @@ const ProjectsPage: Component = () => {
                 clearForm();
               }}
               class="btn-primary"
-              style={{ padding: '4px 10px', 'font-size': '0.85rem' }}
+              style={{ padding: '4px 10px', 'font-size': 'var(--text-sm-size)' }}
             >
               افزودن +
             </button>
@@ -223,7 +223,7 @@ const ProjectsPage: Component = () => {
             value={searchQuery()}
             onInput={(e) => setSearchQuery(e.currentTarget.value)}
             class="premium-input"
-            style={{ padding: '8px 12px', 'font-size': '0.85rem' }}
+            style={{ padding: '8px 12px', 'font-size': 'var(--text-sm-size)' }}
           />
         </div>
 
@@ -243,7 +243,7 @@ const ProjectsPage: Component = () => {
                 style={{
                   flex: 1,
                   padding: '4px 0',
-                  'font-size': '0.75rem',
+                  'font-size': 'var(--text-xs-size)',
                   'font-weight': statusFilter() === statusOpt ? 600 : 400,
                   'border-radius': 'var(--radius-sm)',
                   'background-color': statusFilter() === statusOpt ? 'var(--color-surface-hover)' : 'transparent',
@@ -258,8 +258,8 @@ const ProjectsPage: Component = () => {
 
         {/* List Content */}
         <div style={{ flex: 1, 'overflow-y': 'auto', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)' }}>
-          <Show when={projects()} fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': '0.9rem' }}>در حال بارگذاری...</p>}>
-            <Show when={filteredProjects().length > 0} fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': '0.9rem', 'text-align': 'center', 'padding-top': 'var(--space-8)' }}>پروژه‌ای یافت نشد</p>}>
+          <Show when={projects()} fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-body-size)' }}>در حال بارگذاری...</p>}>
+            <Show when={filteredProjects().length > 0} fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-body-size)', 'text-align': 'center', 'padding-top': 'var(--space-8)' }}>پروژه‌ای یافت نشد</p>}>
               <For each={filteredProjects()}>
                 {(proj) => {
                   const isSelected = () => selectedProjectId() === proj.id;
@@ -293,16 +293,16 @@ const ProjectsPage: Component = () => {
                       <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', width: '100%' }}>
                         <div style={{ display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
                           <div style={{ width: '8px', height: '8px', 'border-radius': '50%', 'background-color': proj.color || 'var(--color-primary)' }} />
-                          <span style={{ 'font-weight': 600, 'font-size': '0.9rem', color: isSelected() ? 'var(--color-primary)' : 'var(--color-text)' }}>
+                          <span style={{ 'font-weight': 600, 'font-size': 'var(--text-body-size)', color: isSelected() ? 'var(--color-primary)' : 'var(--color-text)' }}>
                             {proj.title}
                           </span>
                         </div>
-                        <span class={`badge badge-${proj.status === 'active' ? 'in-progress' : proj.status === 'completed' ? 'done' : 'todo'}`} style={{ 'font-size': '0.65rem' }}>
+                        <span class={`badge badge-${proj.status === 'active' ? 'in-progress' : proj.status === 'completed' ? 'done' : 'todo'}`} style={{ 'font-size': 'var(--text-xs-size)' }}>
                           {getStatusLabel(proj.status)}
                         </span>
                       </div>
                       
-                      <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', width: '100%', 'font-size': '0.75rem', color: 'var(--color-text-muted)' }}>
+                      <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', width: '100%', 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)' }}>
                         <span>مشتری: {clientName() || 'بدون مشتری'}</span>
                         <Show when={proj.deadline}>
                           <span>مهلت: {formatPersianNumber(formatJalaliDate(proj.deadline).split(' ')[0])} {formatJalaliDate(proj.deadline).split(' ')[1]}</span>
@@ -323,16 +323,16 @@ const ProjectsPage: Component = () => {
         {/* CASE 1: Adding a Project */}
         <Show when={isAdding()}>
           <div class="premium-card animate-slide-up" style={{ 'max-width': '650px', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-5)' }}>
-            <h3 style={{ 'font-size': '1.15rem', 'font-weight': 700 }}>تعریف پروژه جدید</h3>
+            <h3 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700 }}>تعریف پروژه جدید</h3>
             
             <form onSubmit={handleAddSubmit} style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-4)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>عنوان پروژه *</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>عنوان پروژه *</label>
                   <input type="text" value={title()} onInput={e => setTitle(e.currentTarget.value)} required class="premium-input" placeholder="طراحی وب‌سایت..." />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>مشتری مرتبط</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مشتری مرتبط</label>
                   <CustomSelect
                     value={clientId()}
                     onChange={setClientId}
@@ -343,18 +343,18 @@ const ProjectsPage: Component = () => {
 
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-4)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>بودجه (ریال)</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>بودجه (ریال)</label>
                   <input type="number" value={budget()} onInput={e => setBudget(Number(e.currentTarget.value))} class="premium-input" placeholder="بودجه کل به ریال..." />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>مهلت تحویل</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مهلت تحویل</label>
                   <input type="date" value={deadline()} onChange={e => setDeadline(e.currentTarget.value)} class="premium-input" style={{ 'color-scheme': 'dark' }} />
                 </div>
               </div>
 
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-4)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>اولویت</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>اولویت</label>
                   <CustomSelect
                     value={priority()}
                     onChange={setPriority}
@@ -366,7 +366,7 @@ const ProjectsPage: Component = () => {
                   />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>وضعیت پروژه</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>وضعیت پروژه</label>
                   <CustomSelect
                     value={status()}
                     onChange={setStatus}
@@ -381,7 +381,7 @@ const ProjectsPage: Component = () => {
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>رنگ نمایه</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>رنگ نمایه</label>
                 <div style={{ display: 'flex', gap: 'var(--space-2)', 'align-items': 'center', 'margin-top': '4px' }}>
                   <For each={colors}>
                     {(c) => (
@@ -400,7 +400,7 @@ const ProjectsPage: Component = () => {
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>توضیحات</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>توضیحات</label>
                 <textarea value={description()} onInput={e => setDescription(e.currentTarget.value)} class="premium-input" style={{ height: '80px', resize: 'none' }} placeholder="شرح پروژه..." />
               </div>
 
@@ -415,16 +415,16 @@ const ProjectsPage: Component = () => {
         {/* CASE 2: Editing a Project */}
         <Show when={isEditing() && activeProject()}>
           <div class="premium-card animate-slide-up" style={{ 'max-width': '650px', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-5)' }}>
-            <h3 style={{ 'font-size': '1.15rem', 'font-weight': 700 }}>ویرایش پروژه: {activeProject()?.title}</h3>
+            <h3 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700 }}>ویرایش پروژه: {activeProject()?.title}</h3>
             
             <form onSubmit={handleEditSubmit} style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-4)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>عنوان پروژه *</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>عنوان پروژه *</label>
                   <input type="text" value={title()} onInput={e => setTitle(e.currentTarget.value)} required class="premium-input" />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>اولویت</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>اولویت</label>
                   <CustomSelect
                     value={priority()}
                     onChange={setPriority}
@@ -439,18 +439,18 @@ const ProjectsPage: Component = () => {
 
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-4)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>بودجه (ریال)</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>بودجه (ریال)</label>
                   <input type="number" value={budget()} onInput={e => setBudget(Number(e.currentTarget.value))} class="premium-input" />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>هزینه شده (ریال)</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>هزینه شده (ریال)</label>
                   <input type="number" value={spent()} onInput={e => setSpent(Number(e.currentTarget.value))} class="premium-input" />
                 </div>
               </div>
 
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-4)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>وضعیت</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>وضعیت</label>
                   <CustomSelect
                     value={status()}
                     onChange={setStatus}
@@ -463,13 +463,13 @@ const ProjectsPage: Component = () => {
                   />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>مهلت تحویل</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مهلت تحویل</label>
                   <input type="date" value={deadline()} onChange={e => setDeadline(e.currentTarget.value)} class="premium-input" style={{ 'color-scheme': 'dark' }} />
                 </div>
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>رنگ نمایه</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>رنگ نمایه</label>
                 <div style={{ display: 'flex', gap: 'var(--space-2)', 'align-items': 'center', 'margin-top': '4px' }}>
                   <For each={colors}>
                     {(c) => (
@@ -497,7 +497,7 @@ const ProjectsPage: Component = () => {
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>توضیحات</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>توضیحات</label>
                 <textarea value={description()} onInput={e => setDescription(e.currentTarget.value)} class="premium-input" style={{ height: '80px', resize: 'none' }} />
               </div>
 
@@ -524,18 +524,18 @@ const ProjectsPage: Component = () => {
                       'box-shadow': '0 0 8px ' + proj.color
                     }} />
                     <div>
-                      <h3 style={{ 'font-size': '1.3rem', 'font-weight': 700 }}>{proj.title}</h3>
-                      <p style={{ 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>
+                      <h3 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700 }}>{proj.title}</h3>
+                      <p style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>
                         مشتری: {projectClient()?.name || 'بدون مشتری (شخصی)'}
                       </p>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                    <button onClick={() => setIsEditing(true)} class="btn-secondary" style={{ padding: '6px 12px', 'font-size': '0.85rem' }}>
+                    <button onClick={() => setIsEditing(true)} class="btn-secondary" style={{ padding: '6px 12px', 'font-size': 'var(--text-sm-size)' }}>
                       <IconEdit style={{ width: '16px', height: '16px' }} /> ویرایش
                     </button>
-                    <button onClick={() => openDeleteModal(proj.id)} class="btn-secondary" style={{ padding: '6px 12px', 'font-size': '0.85rem', color: 'var(--color-danger)', 'border-color': 'rgba(239, 68, 68, 0.2)' }}>
+                    <button onClick={() => openDeleteModal(proj.id)} class="btn-secondary" style={{ padding: '6px 12px', 'font-size': 'var(--text-sm-size)', color: 'var(--color-danger)', 'border-color': 'rgba(239, 68, 68, 0.2)' }}>
                       <IconTrash style={{ width: '16px', height: '16px' }} /> حذف
                     </button>
                   </div>
@@ -548,18 +548,18 @@ const ProjectsPage: Component = () => {
                   <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-6)' }}>
                     {/* Description card */}
                     <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
-                      <h4 style={{ 'font-size': '1rem', 'font-weight': 600 }}>توضیحات پروژه</h4>
-                      <p style={{ 'font-size': '0.95rem', 'line-height': 1.6, color: proj.description ? 'var(--color-text)' : 'var(--color-text-muted)' }}>
+                      <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 600 }}>توضیحات پروژه</h4>
+                      <p style={{ 'font-size': 'var(--text-body-size)', 'line-height': 1.6, color: proj.description ? 'var(--color-text)' : 'var(--color-text-muted)' }}>
                         {proj.description || 'توضیحاتی برای این پروژه ثبت نشده است.'}
                       </p>
                     </div>
 
                     {/* Tasks card list */}
                     <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
-                      <h4 style={{ 'font-size': '1rem', 'font-weight': 600 }}>وظایف مرتبط</h4>
+                      <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 600 }}>وظایف مرتبط</h4>
                       <Show 
                         when={projectTasks().length > 0} 
-                        fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': '0.85rem' }}>هیچ وظیفه‌ای برای این پروژه تعریف نشده است.</p>}
+                        fallback={<p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-sm-size)' }}>هیچ وظیفه‌ای برای این پروژه تعریف نشده است.</p>}
                       >
                         <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)' }}>
                           <For each={projectTasks()}>
@@ -569,7 +569,7 @@ const ProjectsPage: Component = () => {
                                 padding: 'var(--space-3)', 'border-radius': 'var(--radius-md)',
                                 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)'
                               }}>
-                                <span style={{ 'font-size': '0.9rem', 'font-weight': 500 }}>{t.title}</span>
+                                <span style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 500 }}>{t.title}</span>
                                 <span class={`badge badge-${t.status === 'done' ? 'done' : 'todo'}`}>
                                   {t.status === 'done' ? 'انجام شد' : 'در انتظار'}
                                 </span>
@@ -585,16 +585,16 @@ const ProjectsPage: Component = () => {
                   <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-6)' }}>
                     {/* Financial card */}
                     <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
-                      <h4 style={{ 'font-size': '1rem', 'font-weight': 600 }}>وضعیت مالی</h4>
+                      <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 600 }}>وضعیت مالی</h4>
                       
                       <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
-                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': '0.9rem' }}>
+                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': 'var(--text-body-size)' }}>
                           <span style={{ color: 'var(--color-text-muted)' }}>بودجه کل:</span>
                           <span style={{ 'font-weight': 700, color: 'var(--color-success)' }}>
                             {formatPersianNumber(proj.budget.toLocaleString())} ریال
                           </span>
                         </div>
-                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': '0.9rem' }}>
+                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': 'var(--text-body-size)' }}>
                           <span style={{ color: 'var(--color-text-muted)' }}>هزینه شده:</span>
                           <span style={{ 'font-weight': 700, color: 'var(--color-warning)' }}>
                             {formatPersianNumber(proj.spent.toLocaleString())} ریال
@@ -617,16 +617,16 @@ const ProjectsPage: Component = () => {
 
                     {/* Deadline card */}
                     <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
-                      <h4 style={{ 'font-size': '1rem', 'font-weight': 600 }}>اطلاعات تحویل</h4>
+                      <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 600 }}>اطلاعات تحویل</h4>
                       
                       <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
-                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': '0.9rem' }}>
+                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': 'var(--text-body-size)' }}>
                           <span style={{ color: 'var(--color-text-muted)' }}>مهلت تحویل:</span>
                           <span style={{ 'font-weight': 600 }}>
                             {proj.deadline ? formatJalaliDate(proj.deadline) : 'مشخص نشده'}
                           </span>
                         </div>
-                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': '0.9rem' }}>
+                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': 'var(--text-body-size)' }}>
                           <span style={{ color: 'var(--color-text-muted)' }}>اولویت پروژه:</span>
                           <span class={`badge badge-${proj.priority}`}>
                             {proj.priority === 'high' ? 'بالا (فوری)' : proj.priority === 'medium' ? 'متوسط' : 'کم'}
@@ -650,7 +650,7 @@ const ProjectsPage: Component = () => {
             color: 'var(--color-text-muted)', gap: 'var(--space-4)'
           }}>
             <IconProjects style={{ width: '64px', height: '64px', opacity: 0.5 }} />
-            <p style={{ 'font-size': '1.05rem', 'font-weight': 500 }}>جهت مشاهده جزئیات، یک پروژه را از لیست انتخاب کنید یا پروژه جدید بسازید.</p>
+            <p style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 500 }}>جهت مشاهده جزئیات، یک پروژه را از لیست انتخاب کنید یا پروژه جدید بسازید.</p>
           </div>
         </Show>
 

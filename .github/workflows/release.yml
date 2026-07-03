@@ -89,13 +89,17 @@ jobs:
           args: ${{ matrix.args }}
 
   # ─────────────────────────────────────────────────────
-  # ANDROID BUILD: APK
+  # ANDROID BUILD: Debug APK (installs immediately, no signing required)
   # ─────────────────────────────────────────────────────
   build-android:
     name: Android APK
     permissions:
       contents: write
     runs-on: ubuntu-22.04
+    env:
+      # Single source of truth for the NDK path — consumed by every step below.
+      NDK_VERSION: '27.0.11902837'
+      SQLX_OFFLINE: 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -115,10 +119,11 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android NDK and build tools
+      - name: Resolve NDK home
+        id: ndk
         run: |
-          sdkmanager "ndk;27.0.11902837"
-          sdkmanager "build-tools;34.0.0"
+          sdkmanager --install "ndk;${NDK_VERSION}" "build-tools;34.0.0"
+          echo "ndk_home=${ANDROID_HOME}/ndk/${NDK_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Install Rust stable + Android targets
         uses: dtolnay/rust-toolchain@stable
@@ -138,30 +143,55 @@ jobs:
         run: npm ci
 
       - name: Initialize Tauri Android project
-        run: |
-          export NDK_HOME="$ANDROID_HOME/ndk/27.0.11902837"
-          npx tauri android init
+        run: npx tauri android init
         env:
-          NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
+          NDK_HOME: ${{ steps.ndk.outputs.ndk_home }}
 
-      - name: Build Android APK
-        run: |
-          export NDK_HOME="$ANDROID_HOME/ndk/27.0.11902837"
-          npx tauri android build --apk
+      # Debug build => APK is signed with the debug keystore, so it installs
+      # on any Android device without a custom signing setup or Play Store.
+      - name: Build Android debug APK
+        run: npx tauri android build --apk --debug
         env:
-          NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
-          SQLX_OFFLINE: true
+          NDK_HOME: ${{ steps.ndk.outputs.ndk_home }}
 
-      - name: Find APK files
-        id: find-apk
+      # Move the final per-ABI APKs into a clean folder with explicit names so
+      # the release assets are self-documenting and intermediates are excluded.
+      - name: Stage and rename APKs
+        id: stage
         run: |
-          find src-tauri/gen/android -name "*.apk" -not -path "*/intermediates/*" | head -20
+          set -euo pipefail
+          STAGE="${RUNNER_TEMP}/apk"
+          mkdir -p "$STAGE"
+          ABI_MAP_ARM64="arm64-v8a"
+          ABI_MAP_ARMV7="armeabi-v7a"
+          ABI_MAP_X86="x86"
+          ABI_MAP_X64="x86_64"
+          while IFS= read -r apk; do
+            case "$apk" in
+              *"/arm64-v8a/"*)     cp "$apk" "$STAGE/karnameh-android-${ABI_MAP_ARM64}-debug.apk" ;;
+              *"/armeabi-v7a/"*)   cp "$apk" "$STAGE/karnameh-android-${ABI_MAP_ARMV7}-debug.apk" ;;
+              *"/x86/"*)           cp "$apk" "$STAGE/karnameh-android-${ABI_MAP_X86}-debug.apk" ;;
+              *"/x86_64/"*)        cp "$apk" "$STAGE/karnameh-android-${ABI_MAP_X64}-debug.apk" ;;
+              *)                   cp "$apk" "$STAGE/$(basename "$apk")" ;;
+            esac
+          done < <(find src-tauri/gen/android/app/build/outputs/apk -name '*.apk')
+          echo "Found staged APKs:"
+          ls -lh "$STAGE"
+          echo "stage_dir=$STAGE" >> "$GITHUB_OUTPUT"
 
       - name: Upload APK to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          files: src-tauri/gen/android/**/*.apk
+          files: ${{ steps.stage.outputs.stage_dir }}/*.apk
           prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload APK build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-debug
+          path: ${{ steps.stage.outputs.stage_dir }}/*.apk
+          if-no-files-found: warn

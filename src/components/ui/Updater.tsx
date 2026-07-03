@@ -76,27 +76,27 @@ const Updater: Component = () => {
         gap: 'var(--space-3)'
       }}>
         <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-          <h3 style={{ margin: 0, color: 'var(--color-text)', 'font-size': '1.1rem', 'font-weight': 'bold' }}>بروزرسانی جدید در دسترس است!</h3>
+          <h3 style={{ margin: 0, color: 'var(--color-text)', 'font-size': 'var(--text-h2-size)', 'font-weight': 'bold' }}>بروزرسانی جدید در دسترس است!</h3>
           <span class="badge badge-primary" style={{ 'background-color': 'var(--color-primary-muted)', color: 'var(--color-primary)' }}>
             v{updateInfo()?.version}
           </span>
         </div>
         
         <Show when={updateInfo()?.body}>
-          <p style={{ margin: 0, 'font-size': '0.85rem', color: 'var(--color-text-muted)', 'max-height': '60px', 'overflow-y': 'auto' }}>
+          <p style={{ margin: 0, 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)', 'max-height': '60px', 'overflow-y': 'auto' }}>
             {updateInfo()?.body}
           </p>
         </Show>
 
         <Show when={updateError()}>
-          <p style={{ margin: 0, 'font-size': '0.8rem', color: 'var(--color-danger)' }}>خطا: {updateError()}</p>
+          <p style={{ margin: 0, 'font-size': 'var(--text-sm-size)', color: 'var(--color-danger)' }}>خطا: {updateError()}</p>
         </Show>
 
         <Show when={isUpdating()}>
           <div style={{ width: '100%', height: '6px', 'background-color': 'var(--color-surface-hover)', 'border-radius': '3px', overflow: 'hidden' }}>
             <div style={{ width: `${updateProgress()}%`, height: '100%', 'background-color': 'var(--color-primary)', transition: 'width 0.2s' }} />
           </div>
-          <p style={{ margin: 0, 'font-size': '0.75rem', 'text-align': 'center', color: 'var(--color-text-muted)' }}>
+          <p style={{ margin: 0, 'font-size': 'var(--text-xs-size)', 'text-align': 'center', color: 'var(--color-text-muted)' }}>
             در حال دانلود و نصب... {updateProgress()}%
           </p>
         </Show>

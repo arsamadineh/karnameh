@@ -130,7 +130,7 @@ const TasksPage: Component = () => {
     <div class="animate-fade-in" style={{ display: 'flex', 'flex-direction': 'column', height: '100%', gap: 'var(--space-5)' }}>
       {/* Page Header */}
       <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-        <h2 style={{ 'font-size': '1.25rem', 'font-weight': 700 }}>مدیریت وظایف</h2>
+        <h2 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700 }}>مدیریت وظایف</h2>
         <button 
           onClick={() => {
             setIsAdding(true);
@@ -150,12 +150,12 @@ const TasksPage: Component = () => {
         {/* Column 1: TODO */}
         <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)', 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)', 'border-radius': 'var(--radius-lg)', padding: 'var(--space-4)', overflow: 'hidden' }}>
           <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-            <h3 style={{ 'font-size': '0.95rem', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
+            <h3 style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
               <span style={{ width: '8px', height: '8px', 'border-radius': '50%', 'background-color': 'var(--color-text-muted)' }} />
               در انتظار انجام
             </h3>
             <span style={{
-              'font-size': '0.75rem', 'background-color': 'var(--color-surface-hover)',
+              'font-size': 'var(--text-xs-size)', 'background-color': 'var(--color-surface-hover)',
               padding: '2px 8px', 'border-radius': 'var(--radius-round)', 'font-weight': 'bold'
             }}>
               {formatPersianNumber(tasksByStatus('todo').length)}
@@ -171,15 +171,15 @@ const TasksPage: Component = () => {
                   style={{ padding: 'var(--space-4)', cursor: 'pointer', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)' }}
                 >
                   <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'start' }}>
-                    <span style={{ 'font-weight': 600, 'font-size': '0.9rem' }}>{task.title}</span>
-                    <span class={`badge badge-${task.priority}`} style={{ 'font-size': '0.65rem' }}>
+                    <span style={{ 'font-weight': 600, 'font-size': 'var(--text-body-size)' }}>{task.title}</span>
+                    <span class={`badge badge-${task.priority}`} style={{ 'font-size': 'var(--text-xs-size)' }}>
                       {task.priority === 'high' ? 'فوری' : task.priority === 'medium' ? 'متوسط' : 'عادی'}
                     </span>
                   </div>
-                  <p style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)', overflow: 'hidden', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
+                  <p style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)', overflow: 'hidden', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
                     {task.description || 'بدون توضیحات'}
                   </p>
-                  <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', 'font-size': '0.75rem', 'margin-top': 'var(--space-2)' }}>
+                  <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', 'font-size': 'var(--text-xs-size)', 'margin-top': 'var(--space-2)' }}>
                     <span style={{ color: 'var(--color-primary)', 'font-weight': 500 }}>
                       {getProjectName(task.project_id)}
                     </span>
@@ -202,12 +202,12 @@ const TasksPage: Component = () => {
         {/* Column 2: IN PROGRESS */}
         <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)', 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)', 'border-radius': 'var(--radius-lg)', padding: 'var(--space-4)', overflow: 'hidden' }}>
           <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-            <h3 style={{ 'font-size': '0.95rem', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
+            <h3 style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
               <span style={{ width: '8px', height: '8px', 'border-radius': '50%', 'background-color': 'var(--color-warning)' }} />
               در حال انجام
             </h3>
             <span style={{
-              'font-size': '0.75rem', 'background-color': 'var(--color-surface-hover)',
+              'font-size': 'var(--text-xs-size)', 'background-color': 'var(--color-surface-hover)',
               padding: '2px 8px', 'border-radius': 'var(--radius-round)', 'font-weight': 'bold'
             }}>
               {formatPersianNumber(tasksByStatus('in_progress').length)}
@@ -223,15 +223,15 @@ const TasksPage: Component = () => {
                   style={{ padding: 'var(--space-4)', cursor: 'pointer', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)' }}
                 >
                   <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'start' }}>
-                    <span style={{ 'font-weight': 600, 'font-size': '0.9rem' }}>{task.title}</span>
-                    <span class={`badge badge-${task.priority}`} style={{ 'font-size': '0.65rem' }}>
+                    <span style={{ 'font-weight': 600, 'font-size': 'var(--text-body-size)' }}>{task.title}</span>
+                    <span class={`badge badge-${task.priority}`} style={{ 'font-size': 'var(--text-xs-size)' }}>
                       {task.priority === 'high' ? 'فوری' : task.priority === 'medium' ? 'متوسط' : 'عادی'}
                     </span>
                   </div>
-                  <p style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)', overflow: 'hidden', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
+                  <p style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)', overflow: 'hidden', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
                     {task.description || 'بدون توضیحات'}
                   </p>
-                  <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', 'font-size': '0.75rem', 'margin-top': 'var(--space-2)' }}>
+                  <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', 'font-size': 'var(--text-xs-size)', 'margin-top': 'var(--space-2)' }}>
                     <span style={{ color: 'var(--color-primary)', 'font-weight': 500 }}>
                       {getProjectName(task.project_id)}
                     </span>
@@ -254,12 +254,12 @@ const TasksPage: Component = () => {
         {/* Column 3: DONE */}
         <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)', 'background-color': 'rgba(255,255,255,0.01)', border: '1px solid var(--color-border)', 'border-radius': 'var(--radius-lg)', padding: 'var(--space-4)', overflow: 'hidden' }}>
           <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-            <h3 style={{ 'font-size': '0.95rem', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
+            <h3 style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 700, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
               <span style={{ width: '8px', height: '8px', 'border-radius': '50%', 'background-color': 'var(--color-success)' }} />
               انجام شده
             </h3>
             <span style={{
-              'font-size': '0.75rem', 'background-color': 'var(--color-surface-hover)',
+              'font-size': 'var(--text-xs-size)', 'background-color': 'var(--color-surface-hover)',
               padding: '2px 8px', 'border-radius': 'var(--radius-round)', 'font-weight': 'bold'
             }}>
               {formatPersianNumber(tasksByStatus('done').length)}
@@ -275,15 +275,15 @@ const TasksPage: Component = () => {
                   style={{ padding: 'var(--space-4)', cursor: 'pointer', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)', opacity: 0.65 }}
                 >
                   <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'start' }}>
-                    <span style={{ 'font-weight': 600, 'font-size': '0.9rem', 'text-decoration': 'line-through' }}>{task.title}</span>
-                    <span class={`badge badge-${task.priority}`} style={{ 'font-size': '0.65rem' }}>
+                    <span style={{ 'font-weight': 600, 'font-size': 'var(--text-body-size)', 'text-decoration': 'line-through' }}>{task.title}</span>
+                    <span class={`badge badge-${task.priority}`} style={{ 'font-size': 'var(--text-xs-size)' }}>
                       {task.priority === 'high' ? 'فوری' : task.priority === 'medium' ? 'متوسط' : 'کم'}
                     </span>
                   </div>
-                  <p style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)', overflow: 'hidden', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
+                  <p style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)', overflow: 'hidden', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
                     {task.description || 'بدون توضیحات'}
                   </p>
-                  <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', 'font-size': '0.75rem', 'margin-top': 'var(--space-2)' }}>
+                  <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', 'font-size': 'var(--text-xs-size)', 'margin-top': 'var(--space-2)' }}>
                     <span style={{ color: 'var(--color-primary)', 'font-weight': 500 }}>
                       {getProjectName(task.project_id)}
                     </span>
@@ -320,16 +320,16 @@ const TasksPage: Component = () => {
             class="premium-card animate-slide-up"
             style={{ width: '100%', 'max-width': '500px', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}
           >
-            <h3 style={{ 'font-size': '1.1rem', 'font-weight': 700 }}>ایجاد وظیفه جدید</h3>
+            <h3 style={{ 'font-size': 'var(--text-h2-size)', 'font-weight': 700 }}>ایجاد وظیفه جدید</h3>
             
             <form onSubmit={handleCreateSubmit} style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>عنوان وظیفه *</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>عنوان وظیفه *</label>
                 <input type="text" value={title()} onInput={e => setTitle(e.currentTarget.value)} required class="premium-input" placeholder="عنوان کار..." />
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>پروژه مرتبط</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>پروژه مرتبط</label>
                 <CustomSelect
                   value={projectId()}
                   onChange={setProjectId}
@@ -339,7 +339,7 @@ const TasksPage: Component = () => {
 
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-3)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>اولویت</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>اولویت</label>
                   <CustomSelect
                     value={priority()}
                     onChange={setPriority}
@@ -351,13 +351,13 @@ const TasksPage: Component = () => {
                   />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>مهلت انجام</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مهلت انجام</label>
                   <input type="date" value={dueDate()} onChange={e => setDueDate(e.currentTarget.value)} class="premium-input" style={{ 'color-scheme': 'dark' }} />
                 </div>
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>توضیحات</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>توضیحات</label>
                 <textarea value={description()} onInput={e => setDescription(e.currentTarget.value)} class="premium-input" style={{ height: '70px', resize: 'none' }} placeholder="توضیحات کار..." />
               </div>
 
@@ -387,10 +387,10 @@ const TasksPage: Component = () => {
             style={{ width: '100%', 'max-width': '500px', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}
           >
             <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-              <h3 style={{ 'font-size': '1.1rem', 'font-weight': 700 }}>ویرایش وظیفه</h3>
+              <h3 style={{ 'font-size': 'var(--text-h2-size)', 'font-weight': 700 }}>ویرایش وظیفه</h3>
               <button 
                 onClick={() => openDeleteModal(selectedTask().id)} 
-                style={{ color: 'var(--color-danger)', 'font-size': '0.85rem', display: 'flex', 'align-items': 'center', gap: '4px' }}
+                style={{ color: 'var(--color-danger)', 'font-size': 'var(--text-sm-size)', display: 'flex', 'align-items': 'center', gap: '4px' }}
               >
                 <IconTrash style={{ width: '16px', height: '16px' }} /> حذف وظیفه
               </button>
@@ -398,12 +398,12 @@ const TasksPage: Component = () => {
             
             <form onSubmit={handleEditSubmit} style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>عنوان وظیفه *</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>عنوان وظیفه *</label>
                 <input type="text" value={title()} onInput={e => setTitle(e.currentTarget.value)} required class="premium-input" />
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>پروژه مرتبط</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>پروژه مرتبط</label>
                 <CustomSelect
                   value={projectId()}
                   onChange={setProjectId}
@@ -413,7 +413,7 @@ const TasksPage: Component = () => {
 
               <div style={{ display: 'grid', 'grid-template-columns': '1fr 1fr', gap: 'var(--space-3)' }}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>اولویت</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>اولویت</label>
                   <CustomSelect
                     value={priority()}
                     onChange={setPriority}
@@ -425,7 +425,7 @@ const TasksPage: Component = () => {
                   />
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ 'font-size': '0.8' + 'rem', color: 'var(--color-text-muted)' }}>وضعیت</label>
+                  <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>وضعیت</label>
                   <CustomSelect
                     value={status()}
                     onChange={setStatus}
@@ -439,12 +439,12 @@ const TasksPage: Component = () => {
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>مهلت انجام</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مهلت انجام</label>
                 <input type="date" value={dueDate()} onChange={e => setDueDate(e.currentTarget.value)} class="premium-input" style={{ 'color-scheme': 'dark' }} />
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
-                <label style={{ 'font-size': '0.8rem', color: 'var(--color-text-muted)' }}>توضیحات</label>
+                <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>توضیحات</label>
                 <textarea value={description()} onInput={e => setDescription(e.currentTarget.value)} class="premium-input" style={{ height: '70px', resize: 'none' }} />
               </div>
 
