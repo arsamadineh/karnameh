@@ -3,7 +3,6 @@ import type { Component } from 'solid-js';
 import { getClients, createClient, deleteClient, updateClient, getProjects } from '../../lib/tauri';
 import { formatPersianNumber } from '../../lib/locale';
 import { selectedClientId, setSelectedClientId, clientRefreshTrigger, triggerClientRefresh, triggerProjectRefresh } from '../../store';
-import { Modal } from '../../components/ui/Modal';
 import { IconEdit, IconTrash, IconUsers } from '../../components/ui/Icons';
 
 const ClientsPage: Component = () => {
