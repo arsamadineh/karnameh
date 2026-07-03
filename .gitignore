@@ -20,9 +20,11 @@ build/
 src-tauri/target/
 
 # --- Tauri / Desktop ---
+# Keep *.db ignored but allow the sqlx compile-time query cache
 src-tauri/**/*.db
 src-tauri/**/*.db-shm
 src-tauri/**/*.db-wal
+!src-tauri/.sqlx/
 *.local
 
 # --- Android Build Artifacts ---

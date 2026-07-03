@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        UPDATE projects\n        SET \n            title = COALESCE(?, title),\n            description = COALESCE(?, description),\n            status = COALESCE(?, status),\n            priority = COALESCE(?, priority),\n            budget = COALESCE(?, budget),\n            spent = COALESCE(?, spent),\n            deadline = COALESCE(?, deadline),\n            color = COALESCE(?, color),\n            tags = COALESCE(?, tags),\n            updated_at = ?\n        WHERE id = ? AND deleted_at IS NULL\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 11
+    },
+    "nullable": []
+  },
+  "hash": "187e64651329f9839b0fe4dd1760481ac2560a4cb7608bae14d0137054ade0ec"
+}

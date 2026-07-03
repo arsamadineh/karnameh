@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        UPDATE tasks\n        SET \n            title = COALESCE(?, title),\n            description = COALESCE(?, description),\n            status = COALESCE(?, status),\n            priority = COALESCE(?, priority),\n            due_date = COALESCE(?, due_date),\n            sort_order = COALESCE(?, sort_order),\n            tags = COALESCE(?, tags),\n            updated_at = ?\n        WHERE id = ? AND deleted_at IS NULL\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 9
+    },
+    "nullable": []
+  },
+  "hash": "e57370daa8c283cac3f41c640a1be5806b06f5d539ec11e7f64c36bfe3f91fad"
+}

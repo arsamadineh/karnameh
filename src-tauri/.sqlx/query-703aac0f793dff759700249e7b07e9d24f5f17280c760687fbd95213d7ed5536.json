@@ -1,0 +1,98 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        SELECT id, client_id, title, description, status, priority, budget, spent, deadline, color, tags, created_at, updated_at, deleted_at\n        FROM projects\n        WHERE deleted_at IS NULL\n        ORDER BY created_at DESC\n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "client_id",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "title",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "description",
+        "ordinal": 3,
+        "type_info": "Text"
+      },
+      {
+        "name": "status",
+        "ordinal": 4,
+        "type_info": "Text"
+      },
+      {
+        "name": "priority",
+        "ordinal": 5,
+        "type_info": "Text"
+      },
+      {
+        "name": "budget",
+        "ordinal": 6,
+        "type_info": "Float"
+      },
+      {
+        "name": "spent",
+        "ordinal": 7,
+        "type_info": "Float"
+      },
+      {
+        "name": "deadline",
+        "ordinal": 8,
+        "type_info": "Text"
+      },
+      {
+        "name": "color",
+        "ordinal": 9,
+        "type_info": "Text"
+      },
+      {
+        "name": "tags",
+        "ordinal": 10,
+        "type_info": "Text"
+      },
+      {
+        "name": "created_at",
+        "ordinal": 11,
+        "type_info": "Text"
+      },
+      {
+        "name": "updated_at",
+        "ordinal": 12,
+        "type_info": "Text"
+      },
+      {
+        "name": "deleted_at",
+        "ordinal": 13,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "703aac0f793dff759700249e7b07e9d24f5f17280c760687fbd95213d7ed5536"
+}

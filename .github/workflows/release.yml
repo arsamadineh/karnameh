@@ -72,6 +72,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+          SQLX_OFFLINE: true
         with:
           tagName: v__VERSION__
           releaseName: "کارنامه v__VERSION__"
@@ -149,6 +150,7 @@ jobs:
           npx tauri android build --apk
         env:
           NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
+          SQLX_OFFLINE: true
 
       - name: Find APK files
         id: find-apk

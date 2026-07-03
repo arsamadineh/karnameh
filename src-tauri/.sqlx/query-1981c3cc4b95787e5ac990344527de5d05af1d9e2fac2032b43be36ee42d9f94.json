@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        UPDATE clients\n        SET \n            name = COALESCE(?, name),\n            phone = COALESCE(?, phone),\n            email = COALESCE(?, email),\n            address = COALESCE(?, address),\n            color = COALESCE(?, color),\n            tags = COALESCE(?, tags),\n            notes = COALESCE(?, notes),\n            updated_at = ?\n        WHERE id = ? AND deleted_at IS NULL\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 9
+    },
+    "nullable": []
+  },
+  "hash": "1981c3cc4b95787e5ac990344527de5d05af1d9e2fac2032b43be36ee42d9f94"
+}

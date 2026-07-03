@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        INSERT INTO checklists (id, title, date, notes, created_at, updated_at)\n        VALUES (?, ?, ?, ?, ?, ?)\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 6
+    },
+    "nullable": []
+  },
+  "hash": "f24ebd670c7ef8bd24bc2fb605cdb858fd15bed62e7a29d57abbbbb063947ee9"
+}
