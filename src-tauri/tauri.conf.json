@@ -36,5 +36,13 @@
     "android": {
       "debugApplicationIdSuffix": ".debug"
     }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "40pgQXouHpSP8xSDC12d7dtZN5HH7qMFUSL6P8I6GII=",
+      "endpoints": [
+        "https://github.com/arsamadineh/karnameh/releases/latest/download/latest.json"
+      ]
+    }
   }
 }

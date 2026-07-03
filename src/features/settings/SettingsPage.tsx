@@ -4,6 +4,8 @@ import {
   getClients, getProjects, getTasks, getChecklists, 
   createClient, createProject, createTask, createChecklist 
 } from '../../lib/tauri';
+import { check } from '@tauri-apps/plugin-updater';
+import { relaunch } from '@tauri-apps/plugin-process';
 import { formatPersianNumber } from '../../lib/locale';
 import { currentTheme, setTheme } from '../../store';
 import { IconPalette, IconMoon, IconSun, IconDatabase, IconUpload, IconDownload, IconDashboard } from '../../components/ui/Icons';
@@ -13,6 +15,37 @@ const SettingsPage: Component = () => {
   const [projects] = createResource<any[]>(getProjects);
   const [tasks] = createResource<any[]>(getTasks);
   const [checklists] = createResource<any[]>(getChecklists);
+
+  const [isCheckingUpdate, setIsCheckingUpdate] = createSignal(false);
+  const [updateMessage, setUpdateMessage] = createSignal('');
+
+  const handleManualUpdateCheck = async () => {
+    setIsCheckingUpdate(true);
+    setUpdateMessage('در حال بررسی بروزرسانی...');
+    try {
+      const update = await check();
+      if (update?.available) {
+        setUpdateMessage(`نسخه ${update.version} در دسترس است. دانلود در پس‌زمینه آغاز شد...`);
+        let downloaded = 0;
+        let contentLength = 0;
+        await update.downloadAndInstall((event: any) => {
+          if (event.event === 'Started') contentLength = event.data.contentLength;
+          if (event.event === 'Progress') {
+            downloaded += event.data.chunkLength;
+            if (contentLength > 0) setUpdateMessage(`در حال دانلود: ${Math.round((downloaded / contentLength) * 100)}%`);
+          }
+        });
+        setUpdateMessage('بروزرسانی با موفقیت نصب شد. برنامه در حال شروع مجدد است...');
+        setTimeout(() => relaunch(), 1000);
+      } else {
+        setUpdateMessage('شما از آخرین نسخه استفاده می‌کنید.');
+      }
+    } catch (err) {
+      setUpdateMessage('خطا در بررسی بروزرسانی.');
+    } finally {
+      setIsCheckingUpdate(false);
+    }
+  };
 
   // Backup export data
   const handleExportData = () => {
@@ -245,11 +278,21 @@ const SettingsPage: Component = () => {
         </div>
       </div>
 
-      {/* About Card */}
+      {/* About & Updates Card */}
       <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)', 'font-size': '0.85rem', color: 'var(--color-text-muted)' }}>
-        <p>کارنامه - نسخه ۱.۰.۰</p>
-        <p>فونت مورد استفاده: وزیرمتن (Vazirmatn) اثر صابر راستی‌کردار</p>
-        <p>© تمامی حقوق محفوظ است.</p>
+        <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
+          <div>
+            <h4 style={{ 'font-size': '1rem', 'font-weight': 700, color: 'var(--color-text)', margin: 0 }}>کارنامه - نسخه ۱.۰.۰-beta</h4>
+            <p style={{ margin: '4px 0 0 0' }}>فونت مورد استفاده: وزیرمتن (Vazirmatn) اثر صابر راستی‌کردار</p>
+            <p style={{ margin: '4px 0 0 0' }}>© تمامی حقوق محفوظ است.</p>
+          </div>
+          <div style={{ display: 'flex', 'flex-direction': 'column', 'align-items': 'flex-end', gap: 'var(--space-2)' }}>
+            <button class="btn-primary" onClick={handleManualUpdateCheck} disabled={isCheckingUpdate()} style={{ 'font-size': '0.8rem', padding: '6px 12px' }}>
+              {isCheckingUpdate() ? 'در حال بررسی...' : 'بررسی بروزرسانی'}
+            </button>
+            {updateMessage() && <span style={{ 'font-size': '0.75rem', color: 'var(--color-primary)' }}>{updateMessage()}</span>}
+          </div>
+        </div>
       </div>
 
     </div>

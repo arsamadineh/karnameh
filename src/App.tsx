@@ -3,6 +3,7 @@ import type { Component } from 'solid-js';
 import BottomNav from './components/layout/BottomNav';
 import Header from './components/layout/Header';
 import SearchPalette from './components/layout/SearchPalette';
+import Updater from './components/ui/Updater';
 import DashboardPage from './features/dashboard/DashboardPage';
 import ClientsPage from './features/clients/ClientsPage';
 import ProjectsPage from './features/projects/ProjectsPage';
@@ -14,6 +15,9 @@ import { currentView, setCurrentView } from './store';
 const App: Component = () => {
   return (
     <div style={{ display: 'flex', 'flex-direction': 'column', height: '100%', width: '100%', overflow: 'hidden' }}>
+      {/* Auto-Updater Modal overlay */}
+      <Updater />
+      
       {/* Search Palette Overlay */}
       <SearchPalette />
       
