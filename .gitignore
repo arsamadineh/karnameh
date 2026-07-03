@@ -1,24 +1,88 @@
-# Logs
-logs
-*.log
+# =============================================================================
+# Karnameh - Production .gitignore
+# =============================================================================
+
+# --- Node & Dependencies ---
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.pnpm-store/
 
-node_modules
-dist
-dist-ssr
+# --- Build Outputs ---
+dist/
+dist-ssr/
+build/
+
+# --- Rust / Cargo ---
+src-tauri/target/
+
+# --- Tauri / Desktop ---
+src-tauri/**/*.db
+src-tauri/**/*.db-shm
+src-tauri/**/*.db-wal
 *.local
 
-# Editor directories and files
-.vscode/*
+# --- Android Build Artifacts ---
+src-tauri/gen/android/
+src-tauri/gen/apple/
+*.apk
+*.aab
+*.ipa
+
+# --- Tauri Updater Keys (NEVER commit private keys) ---
+.tauri/
+*.key
+*.pem
+*.p12
+TAURI_PRIVATE_KEY
+TAURI_KEY_PASSWORD
+
+# --- AI / Agent Tooling (internal only - not for public) ---
+AGENTS.md
+.gemini/
+.cursor/
+.aider*
+.copilot/
+copilot-instructions.md
+.github/prompts/
+ai-notes.md
+TODO.ai.md
+PLAN.md
+
+# --- Environment / Secrets ---
+.env
+.env.*
+!.env.example
+*.secret
+secrets.json
+
+# --- Editor Directories ---
+.vscode/
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# --- OS Artifacts ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# --- Logs ---
+logs/
+*.log
+
+# --- Test Coverage ---
+coverage/
+.nyc_output/

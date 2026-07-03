@@ -1,4 +1,4 @@
-import { createResource } from 'solid-js';
+import { createResource, createSignal } from 'solid-js';
 import type { Component } from 'solid-js';
 import { 
   getClients, getProjects, getTasks, getChecklists, 

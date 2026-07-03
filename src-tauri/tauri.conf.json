@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "karnameh",
   "version": "0.1.0",
-  "identifier": "com.karnameh.app",
+  "identifier": "com.karnameh.desktop",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:1420",
