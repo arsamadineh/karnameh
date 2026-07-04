@@ -69,30 +69,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # macOS — Apple Silicon (most modern macs)
           - os: macos-latest
             target: aarch64-apple-darwin
             label: macOS Apple Silicon
-          # macOS — Intel (legacy hardware)
           - os: macos-13
             target: x86_64-apple-darwin
             label: macOS Intel
-          # Windows — x64 (95%+ of Windows installs)
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             label: Windows x64
-          # Windows — ARM64 (Snapdragon X Surface devices)
-          - os: windows-11-arm
-            target: aarch64-pc-windows-msvc
-            label: Windows ARM64
-          # Linux — x64 (desktop Linux)
           - os: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
             label: Linux x64
-          # Linux — ARM64 (Raspberry Pi 5, ARM servers, Asahi)
-          - os: ubuntu-22.04-arm
-            target: aarch64-unknown-linux-gnu
-            label: Linux ARM64
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -115,7 +103,7 @@ jobs:
           cache-on-failure: true
 
       - name: Install Linux system dependencies
-        if: matrix.os == 'ubuntu-22.04' || matrix.os == 'ubuntu-22.04-arm'
+        if: matrix.os == 'ubuntu-22.04'
         shell: bash
         run: |
           sudo apt-get update
@@ -171,7 +159,6 @@ jobs:
 
             **Windows**
             - `*_x64-setup.exe` — modern Intel/AMD 64-bit (NSIS installer)
-            - `*_arm64-setup.exe` — Qualcomm Snapdragon X / Surface (NSIS installer)
             - `*.msi` — Windows Installer wrapper
 
             **macOS**
@@ -181,16 +168,12 @@ jobs:
 
             **Linux**
             - `*_amd64.AppImage` — Intel/AMD 64-bit (portable, no install)
-            - `*_arm64.AppImage` — ARM64 (Raspberry Pi 5, Asahi, ARM servers)
             - `*_amd64.deb` — Debian/Ubuntu
-            - `*_arm64.deb` — Debian/Ubuntu on ARM64
             - `*.rpm` — Fedora/RHEL (when available)
 
             **Android** (in the same release)
             - `karnameh-arm64-v8a.apk` — most modern phones
             - `karnameh-armeabi-v7a.apk` — older 32-bit ARM devices
-            - `karnameh-x86_64.apk` — 64-bit emulators
-            - `karnameh-x86.apk` — 32-bit emulators
 
             All desktop binaries are built with the size-optimized Cargo release
             profile (`lto = true`, `opt-level = "z"`, `strip = true`) for the
@@ -234,8 +217,6 @@ jobs:
           targets: |
             aarch64-linux-android
             armv7-linux-androideabi
-            i686-linux-android
-            x86_64-linux-android
 
       - name: Rust build cache
         uses: swatinem/rust-cache@v2
@@ -332,7 +313,7 @@ splits_block = '''    splits {
         abi {
             isUniversalApk = false
             reset()
-            include(\"arm64-v8a\", \"armeabi-v7a\", \"x86\", \"x86_64\")
+            include(\"arm64-v8a\", \"armeabi-v7a\")
         }
     }
 
@@ -364,8 +345,6 @@ print(content)
             case "$apk" in
               *"/arm64-v8a/"*)     cp "$apk" "$STAGE/karnameh-arm64-v8a.apk" ;;
               *"/armeabi-v7a/")*)  cp "$apk" "$STAGE/karnameh-armeabi-v7a.apk" ;;
-              *"/x86/")*)          cp "$apk" "$STAGE/karnameh-x86.apk" ;;
-              *"/x86_64/")*)       cp "$apk" "$STAGE/karnameh-x86_64.apk" ;;
               *)                   cp "$apk" "$STAGE/$(basename "$apk")" ;;
             esac
           done < <(find src-tauri/gen/android/app/build/outputs/apk -name '*.apk')
