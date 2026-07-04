@@ -1,6 +1,7 @@
 import { createSignal, Show, onCleanup } from 'solid-js';
 import type { Component } from 'solid-js';
 import { setSearchPaletteOpen } from '../../store';
+import { userName } from '../../store';
 import { IconSearch, IconLogo, IconUser, IconLogOut } from '../ui/Icons';
 
 interface HeaderProps {
@@ -91,7 +92,7 @@ const Header: Component<HeaderProps> = (props) => {
             onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-border-glow)'}
             onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
           >
-            آ
+            {userName()?.charAt(0) || 'ک'}
           </button>
 
           {/* Profile Dropdown */}
@@ -114,7 +115,7 @@ const Header: Component<HeaderProps> = (props) => {
             class="animate-fade-in"
             >
               <div style={{ padding: '8px 12px', 'border-bottom': '1px solid var(--color-border)', 'margin-bottom': '4px' }}>
-                <p style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 600, color: 'var(--color-text)' }}>آرسام</p>
+                <p style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 600, color: 'var(--color-text)' }}>{userName() || 'کاربر'}</p>
                 <p style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)' }}>مدیر سیستم</p>
               </div>
               <button class="sidebar-menu-item" style={{ 'text-align': 'right', padding: '8px 12px', 'font-size': 'var(--text-sm-size)', 'border-radius': 'var(--radius-sm)', width: '100%', display: 'flex', 'align-items': 'center', gap: '8px' }}>

@@ -1,23 +1,37 @@
-import { Switch, Match, Show } from 'solid-js';
+import { Switch, Match, Show, onMount } from 'solid-js';
 import type { Component } from 'solid-js';
 import BottomNav from './components/layout/BottomNav';
 import Header from './components/layout/Header';
 import Sidebar from './components/layout/Sidebar';
 import SearchPalette from './components/layout/SearchPalette';
 import Updater from './components/ui/Updater';
+import WelcomeModal from './components/ui/WelcomeModal';
+import UpdateChangelog from './components/ui/UpdateChangelog';
 import DashboardPage from './features/dashboard/DashboardPage';
 import ClientsPage from './features/clients/ClientsPage';
 import ProjectsPage from './features/projects/ProjectsPage';
 import TasksPage from './features/tasks/TasksPage';
 import ChecklistsPage from './features/checklists/ChecklistsPage';
 import SettingsPage from './features/settings/SettingsPage';
-import { currentView, setCurrentView, showSidebar } from './store';
+import { currentView, setCurrentView, showSidebar, bootstrapAppVersion } from './store';
 
 const App: Component = () => {
+  onMount(() => {
+    // Fire-and-forget: kicks off the Tauri runtime version lookup that
+    // decides whether the post-upgrade changelog modal should appear.
+    void bootstrapAppVersion();
+  });
+
   return (
     <div style={{ display: 'flex', 'flex-direction': 'column', height: '100%', width: '100%', overflow: 'hidden' }}>
       {/* Auto-Updater Modal overlay */}
       <Updater />
+
+      {/* Welcome Modal - asks for name on first launch */}
+      <WelcomeModal />
+
+      {/* Update Changelog - shows after update */}
+      <UpdateChangelog />
 
       {/* Search Palette Overlay */}
       <SearchPalette />

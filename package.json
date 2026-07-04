@@ -1,7 +1,7 @@
 {
   "name": "karnameh",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,6 +12,7 @@
   "dependencies": {
     "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-updater": "^2.10.1",
+    "mimo": "^0.1.1",
     "solid-js": "^1.9.13",
     "vazirmatn": "^33.0.3"
   },

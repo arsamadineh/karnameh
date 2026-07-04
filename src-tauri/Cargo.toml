@@ -1,6 +1,6 @@
 [package]
 name = "karnameh"
-version = "1.0.0"
+version = "1.1.0"
 description = "بومی مدیریت پروژه، کارها و چک‌لیست‌های روزانه"
 authors = ["arsamadineh"]
 license = "MIT"
@@ -33,3 +33,15 @@ tauri-plugin-dialog = "2.7.1"
 tauri-plugin-fs = "2.5.1"
 tauri-plugin-updater = "2.10.1"
 tauri-plugin-process = "2.3.1"
+
+# ─── RELEASE PROFILE (size-optimized) ───
+# Strips symbols, enables LTO, optimizes for size over speed, and aborts on panic
+# instead of unwinding. This typically reduces the final Tauri binary by
+# 25–50% without any user-visible regression because the UI is JS-driven.
+# `lto = true` ("fat" LTO) is the most aggressive; acceptable for CI builds.
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

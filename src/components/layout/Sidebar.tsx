@@ -13,7 +13,7 @@ import {
   IconUser,
   IconLogOut
 } from '../ui/Icons';
-import { isSidebarCollapsed, setIsSidebarCollapsed } from '../../store';
+import { isSidebarCollapsed, setIsSidebarCollapsed, userName } from '../../store';
 
 interface SidebarProps {
   currentView: string;
@@ -174,7 +174,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
             'font-size': 'var(--text-body-size)',
             'flex-shrink': 0
           }}>
-            آ
+            {userName()?.charAt(0) || 'ک'}
           </div>
           
           <div style={{ 
@@ -185,7 +185,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
             'white-space': 'nowrap'
           }}>
             <h4 style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 600, color: 'var(--color-text)', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
-              آرسام
+              {userName() || 'کاربر'}
             </h4>
             <p style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)' }}>مدیر سیستم</p>
           </div>

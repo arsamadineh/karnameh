@@ -1,5 +1,6 @@
 import { createSignal } from 'solid-js';
 import { createMediaQuery } from '../lib/media';
+import { getVersion } from '@tauri-apps/api/app';
 
 // Navigation & Active States
 export const [currentView, setCurrentView] = createSignal<string>('dashboard');
@@ -37,6 +38,47 @@ export const triggerTaskRefresh = () => setTaskRefreshTrigger(prev => prev + 1);
 export const triggerChecklistRefresh = () => setChecklistRefreshTrigger(prev => prev + 1);
 
 export { clientRefreshTrigger, projectRefreshTrigger, taskRefreshTrigger, checklistRefreshTrigger };
+
+// User Profile
+const initialUserName = localStorage.getItem('userName') || '';
+export const [userName, setUserName] = createSignal<string>(initialUserName);
+
+export function saveUserName(name: string) {
+  setUserName(name);
+  localStorage.setItem('userName', name);
+}
+
+// App Version Tracking (for update detection)
+// Read the runtime version from the running binary so it always reflects the
+// installed release — no need to keep this in sync with package.json manually.
+const [currentAppVersion, setCurrentAppVersion] = createSignal<string>('');
+export const [hasUpdate, setHasUpdate] = createSignal<boolean>(false);
+
+export async function bootstrapAppVersion(): Promise<void> {
+  try {
+    const v = await getVersion();
+    const previousVersion = localStorage.getItem('appVersion');
+    setCurrentAppVersion(v);
+    // Show the post-upgrade changelog only when a prior version was on disk
+    // and it differs from what's now running. First-ever launches stay quiet.
+    if (previousVersion !== null && previousVersion !== v) {
+      setHasUpdate(true);
+    }
+    // Always persist so future launches only fire when the version changes.
+    localStorage.setItem('appVersion', v);
+  } catch (e) {
+    // Non-Tauri runtime (web preview / dev tools) — stay quiet, no modal.
+    console.warn('Could not load app version from Tauri:', e);
+  }
+}
+
+export function markVersionSeen() {
+  setHasUpdate(false);
+}
+
+export function getCurrentAppVersion() {
+  return currentAppVersion();
+}
 
 // Theme Management
 const initialTheme = (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system';

@@ -4,6 +4,7 @@ import { getClients, getProjects, getTasks } from '../../lib/tauri';
 import { formatPersianNumber, formatJalaliDate } from '../../lib/locale';
 import { setCurrentView, setSelectedProjectId } from '../../store';
 import { IconUsers, IconProjects, IconTasks } from '../../components/ui/Icons';
+import { userName } from '../../store';
 
 const DashboardPage: Component = () => {
   const [clients] = createResource<any[]>(getClients);
@@ -18,7 +19,7 @@ const DashboardPage: Component = () => {
       {/* Welcome message */}
       <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
         <div>
-          <h2 class="stat-title" style={{ 'margin-bottom': 'var(--space-2)' }}>سلام آرسام 👋</h2>
+          <h2 class="stat-title" style={{ 'margin-bottom': 'var(--space-2)' }}>سلام {userName() || 'کاربر'} 👋</h2>
           <p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-body-size)' }}>امروز {formatJalaliDate(new Date())} است.</p>
         </div>
       </div>
