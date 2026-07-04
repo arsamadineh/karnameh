@@ -1,6 +1,6 @@
 [package]
 name = "karnameh"
-version = "1.0.0-beta"
+version = "1.0.0"
 description = "بومی مدیریت پروژه، کارها و چک‌لیست‌های روزانه"
 authors = ["arsamadineh"]
 license = "MIT"

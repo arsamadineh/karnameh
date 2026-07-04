@@ -5,17 +5,89 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0, 1.0.0-beta.1)'
+        required: false
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  APP_NAME: karnameh
+  SQLX_OFFLINE: 'true'
+
 jobs:
+  # ─────────────────────────────────────────────────────
+  # VALIDATE: Check version consistency across files
+  # ─────────────────────────────────────────────────────
+  validate:
+    name: Validate Release
+    runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is_prerelease: ${{ steps.version.outputs.is_prerelease }}
+      tag_name: ${{ steps.version.outputs.tag_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract and validate version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+            TAG_NAME="v${VERSION}"
+          else
+            TAG_NAME="${GITHUB_REF#refs/tags/}"
+            VERSION="${TAG_NAME#v}"
+          fi
+
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag_name=${TAG_NAME}" >> "$GITHUB_OUTPUT"
+
+          # Check if prerelease
+          if [[ "$VERSION" == *"beta"* ]] || [[ "$VERSION" == *"alpha"* ]] || [[ "$VERSION" == *"rc"* ]]; then
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "📦 Releasing version: ${VERSION} (tag: ${TAG_NAME})"
+
+          # Validate version format
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "❌ Invalid version format: ${VERSION}"
+            echo "Expected format: X.Y.Z or X.Y.Z-prerelease"
+            exit 1
+          fi
+
+          # Check version consistency across files
+          CONF_VERSION=$(jq -r '.version' src-tauri/tauri.conf.json)
+          CARGO_VERSION=$(grep '^version' src-tauri/Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          PKG_VERSION=$(jq -r '.version' package.json)
+
+          echo "📋 Version check:"
+          echo "  - tauri.conf.json: ${CONF_VERSION}"
+          echo "  - Cargo.toml: ${CARGO_VERSION}"
+          echo "  - package.json: ${PKG_VERSION}"
+          echo "  - Target: ${VERSION}"
+
+          if [ "$CONF_VERSION" != "$VERSION" ] || [ "$CARGO_VERSION" != "$VERSION" ] || [ "$PKG_VERSION" != "$VERSION" ]; then
+            echo "⚠️ Warning: Version mismatch detected!"
+            echo "Auto-updating all files to version ${VERSION}..."
+          fi
+
   # ─────────────────────────────────────────────────────
   # DESKTOP BUILD: Windows / macOS / Linux
   # ─────────────────────────────────────────────────────
   build-desktop:
     name: Desktop (${{ matrix.platform }})
+    needs: validate
     permissions:
       contents: write
     strategy:
@@ -24,10 +96,13 @@ jobs:
         include:
           - platform: windows-latest
             args: ""
+            target: "windows"
           - platform: macos-latest
             args: "--target universal-apple-darwin"
+            target: "macos"
           - platform: ubuntu-22.04
             args: ""
+            target: "linux"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -44,6 +119,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          components: rustfmt, clippy
 
       - name: Rust build cache
         uses: swatinem/rust-cache@v2
@@ -63,8 +139,29 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
 
+      - name: Install NSIS (for cross-compilation)
+        if: matrix.platform == 'macos-latest' || matrix.platform == 'ubuntu-22.04'
+        run: |
+          if command -v brew &> /dev/null; then
+            brew install nsis
+          elif command -v apt-get &> /dev/null; then
+            sudo apt-get install -y nsis
+          fi
+
       - name: Install frontend dependencies
         run: npm ci
+
+      - name: Update version files
+        run: |
+          VERSION="${{ needs.validate.outputs.version }}"
+          if [ -n "$VERSION" ]; then
+            # Update tauri.conf.json
+            jq --arg v "$VERSION" '.version = $v' src-tauri/tauri.conf.json > tmp.json && mv tmp.json src-tauri/tauri.conf.json
+            # Update Cargo.toml
+            sed -i "s/^version = \".*\"/version = \"${VERSION}\"/" src-tauri/Cargo.toml
+            # Update package.json
+            jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
+          fi
 
       - name: Build and publish desktop release
         uses: tauri-apps/tauri-action@v0
@@ -72,34 +169,54 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
-          SQLX_OFFLINE: true
         with:
-          tagName: v__VERSION__
-          releaseName: "کارنامه v__VERSION__"
+          tagName: ${{ needs.validate.outputs.tag_name }}
+          releaseName: "کارنامه v${{ needs.validate.outputs.version }}"
           releaseBody: |
-            ## کارنامه - نرم‌افزار مدیریت پروژه فارسی
+            ## 🚀 کارنامه - نرم‌افزار مدیریت پروژه فارسی
 
-            برای دانلود نسخه مناسب سیستم‌عامل خود، فایل‌های زیر را دریافت کنید:
-            - **ویندوز**: فایل `.msi` یا `.exe`
-            - **macOS**: فایل `.dmg`
-            - **لینوکس**: فایل `.deb` یا `.AppImage`
-            - **اندروید**: فایل `.apk`
+            ### 📥 دانلود
+            فایل‌های زیر را بر اساس سیستم‌عامل خود دانلود کنید:
+
+            | سیستم‌عامل | فایل | توضیحات |
+            |-----------|------|---------|
+            | **ویندوز** | `.exe` | نصب‌کننده NSIS (توصیه شده) |
+            | **ویندوز** | `.msi` | نصب‌کننده MSI |
+            | **macOS** | `.dmg` | فایل نصبی macOS |
+            | **لینوکس** | `.deb` | بسته Debian/Ubuntu |
+            | **لینوکس** | `.AppImage` | قابل اجرا بدون نصب |
+            | **اندروید** | `.apk` | فایل نصبی اندروید |
+
+            ### 🔄 بروزرسانی خودکار
+            اگر از نسخه قبلی استفاده می‌کنید، بروزرسانی خودکار دریافت خواهید کرد.
+
+            ### 📝 تغییرات
+            برای مشاهده جزئیات تغییرات، [CHANGELOG](../../blob/main/CHANGELOG.md) را مشاهده کنید.
           releaseDraft: false
-          prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+          prerelease: ${{ needs.validate.outputs.is_prerelease }}
           args: ${{ matrix.args }}
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-${{ matrix.target }}
+          path: |
+            src-tauri/target/release/bundle/**/*
+            !src-tauri/target/release/bundle/**/*.d
+          if-no-files-found: warn
 
   # ─────────────────────────────────────────────────────
   # ANDROID BUILD: Debug APK (installs immediately, no signing required)
   # ─────────────────────────────────────────────────────
   build-android:
     name: Android APK
+    needs: validate
     permissions:
       contents: write
     runs-on: ubuntu-22.04
     env:
-      # Single source of truth for the NDK path — consumed by every step below.
       NDK_VERSION: '27.0.11902837'
-      SQLX_OFFLINE: 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -142,39 +259,42 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
+      - name: Update version files
+        run: |
+          VERSION="${{ needs.validate.outputs.version }}"
+          if [ -n "$VERSION" ]; then
+            jq --arg v "$VERSION" '.version = $v' src-tauri/tauri.conf.json > tmp.json && mv tmp.json src-tauri/tauri.conf.json
+            sed -i "s/^version = \".*\"/version = \"${VERSION}\"/" src-tauri/Cargo.toml
+            jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
+          fi
+
       - name: Initialize Tauri Android project
         run: npx tauri android init
         env:
           NDK_HOME: ${{ steps.ndk.outputs.ndk_home }}
 
-      # Debug build => APK is signed with the debug keystore, so it installs
-      # on any Android device without a custom signing setup or Play Store.
       - name: Build Android debug APK
         run: npx tauri android build --apk --debug
         env:
           NDK_HOME: ${{ steps.ndk.outputs.ndk_home }}
 
-      # Move the final per-ABI APKs into a clean folder with explicit names so
-      # the release assets are self-documenting and intermediates are excluded.
       - name: Stage and rename APKs
         id: stage
         run: |
           set -euo pipefail
           STAGE="${RUNNER_TEMP}/apk"
           mkdir -p "$STAGE"
-          ABI_MAP_ARM64="arm64-v8a"
-          ABI_MAP_ARMV7="armeabi-v7a"
-          ABI_MAP_X86="x86"
-          ABI_MAP_X64="x86_64"
+
           while IFS= read -r apk; do
             case "$apk" in
-              *"/arm64-v8a/"*)     cp "$apk" "$STAGE/karnameh-android-${ABI_MAP_ARM64}-debug.apk" ;;
-              *"/armeabi-v7a/"*)   cp "$apk" "$STAGE/karnameh-android-${ABI_MAP_ARMV7}-debug.apk" ;;
-              *"/x86/"*)           cp "$apk" "$STAGE/karnameh-android-${ABI_MAP_X86}-debug.apk" ;;
-              *"/x86_64/"*)        cp "$apk" "$STAGE/karnameh-android-${ABI_MAP_X64}-debug.apk" ;;
+              *"/arm64-v8a/"*)     cp "$apk" "$STAGE/karnameh-android-arm64-v8a-debug.apk" ;;
+              *"/armeabi-v7a/"*)   cp "$apk" "$STAGE/karnameh-android-armeabi-v7a-debug.apk" ;;
+              *"/x86/"*)           cp "$apk" "$STAGE/karnameh-android-x86-debug.apk" ;;
+              *"/x86_64/"*)        cp "$apk" "$STAGE/karnameh-android-x86_64-debug.apk" ;;
               *)                   cp "$apk" "$STAGE/$(basename "$apk")" ;;
             esac
           done < <(find src-tauri/gen/android/app/build/outputs/apk -name '*.apk')
+
           echo "Found staged APKs:"
           ls -lh "$STAGE"
           echo "stage_dir=$STAGE" >> "$GITHUB_OUTPUT"
@@ -182,9 +302,9 @@ jobs:
       - name: Upload APK to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ needs.validate.outputs.tag_name }}
           files: ${{ steps.stage.outputs.stage_dir }}/*.apk
-          prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+          prerelease: ${{ needs.validate.outputs.is_prerelease }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -195,3 +315,37 @@ jobs:
           name: android-apk-debug
           path: ${{ steps.stage.outputs.stage_dir }}/*.apk
           if-no-files-found: warn
+
+  # ─────────────────────────────────────────────────────
+  # UPDATE CHECKSUMS: Generate checksums for all artifacts
+  # ─────────────────────────────────────────────────────
+  update-checksums:
+    name: Update Checksums
+    needs: [validate, build-desktop, build-android]
+    permissions:
+      contents: write
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          find . -type f \( -name "*.exe" -o -name "*.msi" -o -name "*.dmg" -o -name "*.deb" -o -name "*.AppImage" -o -name "*.apk" -o -name "*.tar.gz" -o -name "*.zip" \) -exec sha256sum {} \; > ../checksums-sha256.txt
+          cd ..
+          cat checksums-sha256.txt
+
+      - name: Upload checksums to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.validate.outputs.tag_name }}
+          files: checksums-sha256.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

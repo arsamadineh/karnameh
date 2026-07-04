@@ -2019,7 +2019,7 @@ dependencies = [
 
 [[package]]
 name = "karnameh"
-version = "1.0.0-beta"
+version = "1.0.0"
 dependencies = [
  "chrono",
  "log",

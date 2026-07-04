@@ -117,6 +117,24 @@ karnameh/
 
 ---
 
+## انتشار نسخه جدید
+
+برای انتشار نسخه جدید، راهنمای [RELEASING.md](./RELEASING.md) را مطالعه کنید.
+
+**خلاصه فرآیند:**
+1. نسخه را در سه فایل به‌روز کنید (`tauri.conf.json`, `Cargo.toml`, `package.json`)
+2. تغییرات را commit کنید
+3. Git tag ایجاد کنید
+4. Push کنید - GitHub Actions به‌صورت خودکار برای تمام پلتفرم‌ها build می‌کند
+
+**پلتفرم‌های build خودکار:**
+- 🪟 Windows: NSIS installer (`.exe`) + MSI (`.msi`)
+- 🍎 macOS: DMG (`.dmg`) برای Intel و Apple Silicon
+- 🐧 Linux: Debian (`.deb`) + AppImage
+- 📱 Android: APK برای تمام معماری‌ها
+
+---
+
 ## پروانه
 
 این پروژه تحت مجوز **MIT** منتشر شده است.
