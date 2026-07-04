@@ -171,43 +171,23 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         with:
           tagName: ${{ needs.validate.outputs.tag_name }}
-          releaseName: "کارنامه v${{ needs.validate.outputs.version }}"
+          releaseName: "karnameh v${{ needs.validate.outputs.version }}"
           releaseBody: |
-            ## 🚀 کارنامه - نرم‌افزار مدیریت پروژه فارسی
+            karnameh v${{ needs.validate.outputs.version }}
 
-            ### 📥 دانلود
-            فایل‌های زیر را بر اساس سیستم‌عامل خود دانلود کنید:
+            Download the appropriate file for your platform:
+            - Windows: .exe (NSIS installer) or .msi
+            - macOS: .dmg (Intel + Apple Silicon)
+            - Linux: .deb or .AppImage
+            - Android: .apk (per ABI)
 
-            | سیستم‌عامل | فایل | توضیحات |
-            |-----------|------|---------|
-            | **ویندوز** | `.exe` | نصب‌کننده NSIS (توصیه شده) |
-            | **ویندوز** | `.msi` | نصب‌کننده MSI |
-            | **macOS** | `.dmg` | فایل نصبی macOS |
-            | **لینوکس** | `.deb` | بسته Debian/Ubuntu |
-            | **لینوکس** | `.AppImage` | قابل اجرا بدون نصب |
-            | **اندروید** | `.apk` | فایل نصبی اندروید |
-
-            ### 🔄 بروزرسانی خودکار
-            اگر از نسخه قبلی استفاده می‌کنید، بروزرسانی خودکار دریافت خواهید کرد.
-
-            ### 📝 تغییرات
-            برای مشاهده جزئیات تغییرات، [CHANGELOG](../../blob/main/CHANGELOG.md) را مشاهده کنید.
+            Auto-update is supported for desktop builds.
           releaseDraft: false
           prerelease: ${{ needs.validate.outputs.is_prerelease }}
           args: ${{ matrix.args }}
 
-      - name: Upload build artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: desktop-${{ matrix.target }}
-          path: |
-            src-tauri/target/release/bundle/**/*
-            !src-tauri/target/release/bundle/**/*.d
-          if-no-files-found: warn
-
   # ─────────────────────────────────────────────────────
-  # ANDROID BUILD: Debug APK (installs immediately, no signing required)
+  # ANDROID BUILD: Per-ABI Release APKs (optimized, stripped, signed)
   # ─────────────────────────────────────────────────────
   build-android:
     name: Android APK
@@ -268,13 +248,56 @@ jobs:
             jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
           fi
 
+      - name: Generate Android signing keystore
+        run: |
+          KEYSTORE_DIR="src-tauri/gen/android"
+          mkdir -p "$KEYSTORE_DIR"
+          # Generate a debug keystore for CI signing
+          keytool -genkey -v \
+            -keystore "$KEYSTORE_DIR/release.keystore" \
+            -alias karnameh \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass karnameh \
+            -keypass karnameh \
+            -dname "CN=KarNama, OU=Development, O=KarNama, L=Tehran, C=IR"
+
+          # Create keystore properties file
+          cat > "$KEYSTORE_DIR/keystore.properties" << 'EOF'
+          storeFile=release.keystore
+          storePassword=karnameh
+          keyAlias=karnameh
+          keyPassword=karnameh
+          EOF
+
       - name: Initialize Tauri Android project
-        run: npx tauri android init
+        run: npx tauri android init --ci
         env:
           NDK_HOME: ${{ steps.ndk.outputs.ndk_home }}
 
-      - name: Build Android debug APK
-        run: npx tauri android build --apk --debug
+      - name: Configure Android build for per-ABI APKs + signing
+        run: |
+          BUILD_FILE="src-tauri/gen/android/app/build.gradle.kts"
+          if [ -f "$BUILD_FILE" ]; then
+            # Add signing config after the android block opening
+            perl -i -pe 's/android \{/android {\n    signingConfigs {\n        create("release") {\n            val keystorePropertiesFile = rootProject.file("keystore.properties")\n            val keystoreProperties = Properties()\n            if (keystorePropertiesFile.exists()) {\n                keystoreProperties.load(FileInputStream(keystorePropertiesFile))\n            }\n            keyAlias = keystoreProperties["keyAlias"] as String\n            keyPassword = keystoreProperties["password"] as String\n            storeFile = file(keystoreProperties["storeFile"] as String)\n            storePassword = keystoreProperties["password"] as String\n        }\n    }\n/' "$BUILD_FILE"
+
+            # Apply signing to release build type
+            perl -i -pe 's/getByName\("release"\) \{/getByName("release") {\n            signingConfig = signingConfigs.getByName("release")/' "$BUILD_FILE"
+
+            # Add ABI splits before defaultConfig
+            perl -i -pe 's/defaultConfig \{/splits {\n        abi {\n            enable true\n            reset()\n            include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"\n            universalApk false\n        }\n    }\n\n    defaultConfig {/' "$BUILD_FILE"
+
+            echo "Patched $BUILD_FILE"
+            cat "$BUILD_FILE"
+          else
+            echo "WARNING: $BUILD_FILE not found"
+            find src-tauri/gen/android -name "build.gradle*" -type f 2>/dev/null
+          fi
+
+      - name: Build Android release APK (per ABI, optimized)
+        run: npx tauri android build --apk
         env:
           NDK_HOME: ${{ steps.ndk.outputs.ndk_home }}
 
@@ -287,10 +310,10 @@ jobs:
 
           while IFS= read -r apk; do
             case "$apk" in
-              *"/arm64-v8a/"*)     cp "$apk" "$STAGE/karnameh-android-arm64-v8a-debug.apk" ;;
-              *"/armeabi-v7a/"*)   cp "$apk" "$STAGE/karnameh-android-armeabi-v7a-debug.apk" ;;
-              *"/x86/"*)           cp "$apk" "$STAGE/karnameh-android-x86-debug.apk" ;;
-              *"/x86_64/"*)        cp "$apk" "$STAGE/karnameh-android-x86_64-debug.apk" ;;
+              *"/arm64-v8a/"*)     cp "$apk" "$STAGE/karnameh-arm64-v8a.apk" ;;
+              *"/armeabi-v7a/"*)   cp "$apk" "$STAGE/karnameh-armeabi-v7a.apk" ;;
+              *"/x86/"*)           cp "$apk" "$STAGE/karnameh-x86.apk" ;;
+              *"/x86_64/"*)        cp "$apk" "$STAGE/karnameh-x86_64.apk" ;;
               *)                   cp "$apk" "$STAGE/$(basename "$apk")" ;;
             esac
           done < <(find src-tauri/gen/android/app/build/outputs/apk -name '*.apk')
@@ -312,40 +335,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: android-apk-debug
+          name: android-apk
           path: ${{ steps.stage.outputs.stage_dir }}/*.apk
           if-no-files-found: warn
-
-  # ─────────────────────────────────────────────────────
-  # UPDATE CHECKSUMS: Generate checksums for all artifacts
-  # ─────────────────────────────────────────────────────
-  update-checksums:
-    name: Update Checksums
-    needs: [validate, build-desktop, build-android]
-    permissions:
-      contents: write
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts/
-          merge-multiple: true
-
-      - name: Generate checksums
-        run: |
-          cd artifacts
-          find . -type f \( -name "*.exe" -o -name "*.msi" -o -name "*.dmg" -o -name "*.deb" -o -name "*.AppImage" -o -name "*.apk" -o -name "*.tar.gz" -o -name "*.zip" \) -exec sha256sum {} \; > ../checksums-sha256.txt
-          cd ..
-          cat checksums-sha256.txt
-
-      - name: Upload checksums to release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.validate.outputs.tag_name }}
-          files: checksums-sha256.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
