@@ -274,58 +274,58 @@ jobs:
             exit 1
           fi
 
-          python3 -c "
+          cat > /tmp/patch_gradle.py << 'PYEOF'
 import re
+import sys
 
-with open('$BUILD_FILE') as f:
+build_file = sys.argv[1]
+
+with open(build_file) as f:
     content = f.read()
 
-# 1. Add import for FileInputStream
 if 'import java.io.FileInputStream' not in content:
     content = 'import java.io.FileInputStream\n\n' + content
 
-# 2. Add signing configs after android {
-signing_block = '''    signingConfigs {
-        create(\"release\") {
-            val keystorePropertiesFile = rootProject.file(\"keystore.properties\")
+signing_block = """    signingConfigs {
+        create("release") {
+            val keystorePropertiesFile = rootProject.file("keystore.properties")
             val keystoreProperties = Properties()
             if (keystorePropertiesFile.exists()) {
                 keystoreProperties.load(FileInputStream(keystorePropertiesFile))
             }
-            keyAlias = keystoreProperties[\"keyAlias\"] as String
-            keyPassword = keystoreProperties[\"password\"] as String
-            storeFile = file(keystoreProperties[\"storeFile\"] as String)
-            storePassword = keystoreProperties[\"password\"] as String
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["password"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["password"] as String
         }
     }
 
-'''
+"""
 content = content.replace('android {', 'android {\n' + signing_block)
 
-# 3. Apply signing to release build type
 content = content.replace(
-    'getByName(\"release\") {',
-    'getByName(\"release\") {\n            signingConfig = signingConfigs.getByName(\"release\")'
+    'getByName("release") {',
+    'getByName("release") {\n            signingConfig = signingConfigs.getByName("release")'
 )
 
-# 4. Add ABI splits before defaultConfig
-splits_block = '''    splits {
+splits_block = """    splits {
         abi {
             isUniversalApk = false
             reset()
-            include(\"arm64-v8a\", \"armeabi-v7a\")
+            include("arm64-v8a", "armeabi-v7a")
         }
     }
 
-    defaultConfig {'''
+    defaultConfig {"""
 content = content.replace('defaultConfig {', splits_block)
 
-with open('$BUILD_FILE', 'w') as f:
+with open(build_file, 'w') as f:
     f.write(content)
 
-print('=== Patched $BUILD_FILE ===')
+print('=== Patched build.gradle.kts ===')
 print(content)
-"
+PYEOF
+          python3 /tmp/patch_gradle.py "$BUILD_FILE"
 
       - name: Build Android release APK (per ABI)
         shell: bash
