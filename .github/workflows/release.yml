@@ -20,9 +20,6 @@ env:
   SQLX_OFFLINE: 'true'
 
 jobs:
-  # ─────────────────────────────────────────────────────
-  # VALIDATE: Check version consistency across files
-  # ─────────────────────────────────────────────────────
   validate:
     name: Validate Release
     runs-on: ubuntu-22.04
@@ -31,13 +28,13 @@ jobs:
       is_prerelease: ${{ steps.version.outputs.is_prerelease }}
       tag_name: ${{ steps.version.outputs.tag_name }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Extract and validate version
         id: version
+        shell: bash
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.version }}" ]; then
             VERSION="${{ github.event.inputs.version }}"
@@ -50,43 +47,21 @@ jobs:
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "tag_name=${TAG_NAME}" >> "$GITHUB_OUTPUT"
 
-          # Check if prerelease
           if [[ "$VERSION" == *"beta"* ]] || [[ "$VERSION" == *"alpha"* ]] || [[ "$VERSION" == *"rc"* ]]; then
             echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
           else
             echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
           fi
 
-          echo "[RELEASE] Releasing version: ${VERSION} (tag: ${TAG_NAME})"
+          echo "[RELEASE] Version: ${VERSION} (tag: ${TAG_NAME})"
 
-          # Validate version format
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
             echo "[ERROR] Invalid version format: ${VERSION}"
-            echo "Expected format: X.Y.Z or X.Y.Z-prerelease"
             exit 1
           fi
 
-          # Check version consistency across files
-          CONF_VERSION=$(jq -r '.version' src-tauri/tauri.conf.json)
-          CARGO_VERSION=$(grep '^version' src-tauri/Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
-          PKG_VERSION=$(jq -r '.version' package.json)
-
-          echo "[CHECK] Version check:"
-          echo "  - tauri.conf.json: ${CONF_VERSION}"
-          echo "  - Cargo.toml: ${CARGO_VERSION}"
-          echo "  - package.json: ${PKG_VERSION}"
-          echo "  - Target: ${VERSION}"
-
-          if [ "$CONF_VERSION" != "$VERSION" ] || [ "$CARGO_VERSION" != "$VERSION" ] || [ "$PKG_VERSION" != "$VERSION" ]; then
-            echo "⚠️ Warning: Version mismatch detected!"
-            echo "Auto-updating all files to version ${VERSION}..."
-          fi
-
-  # ─────────────────────────────────────────────────────
-  # DESKTOP BUILD: Windows / macOS / Linux
-  # ─────────────────────────────────────────────────────
   build-desktop:
-    name: Desktop (${{ matrix.platform }})
+    name: Desktop (${{ matrix.target }})
     needs: validate
     permissions:
       contents: write
@@ -94,23 +69,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: windows-latest
-            args: ""
-            target: "windows"
-          - platform: macos-latest
-            args: "--target universal-apple-darwin"
-            target: "macos"
-          - platform: ubuntu-22.04
-            args: ""
-            target: "linux"
+          - os: windows-latest
+            target: windows
+          - os: macos-latest
+            target: macos
+          - os: ubuntu-22.04
+            target: linux
 
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: 'npm'
@@ -118,8 +88,7 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
-          components: rustfmt, clippy
+          targets: ${{ matrix.os == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Rust build cache
         uses: swatinem/rust-cache@v2
@@ -127,7 +96,8 @@ jobs:
           workspaces: './src-tauri -> target'
 
       - name: Install Linux system dependencies
-        if: matrix.platform == 'ubuntu-22.04'
+        if: matrix.os == 'ubuntu-22.04'
+        shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -139,40 +109,31 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
 
-      - name: Install NSIS (for cross-compilation)
-        if: matrix.platform == 'macos-latest' || matrix.platform == 'ubuntu-22.04'
-        run: |
-          if command -v brew &> /dev/null; then
-            brew install nsis
-          elif command -v apt-get &> /dev/null; then
-            sudo apt-get install -y nsis
-          fi
-
       - name: Install frontend dependencies
+        shell: bash
         run: npm ci
 
       - name: Update version files
+        shell: bash
         run: |
           VERSION="${{ needs.validate.outputs.version }}"
           if [ -n "$VERSION" ]; then
-            # Update tauri.conf.json
             jq --arg v "$VERSION" '.version = $v' src-tauri/tauri.conf.json > tmp.json && mv tmp.json src-tauri/tauri.conf.json
-            # Update Cargo.toml
-            sed -i "s/^version = \".*\"/version = \"${VERSION}\"/" src-tauri/Cargo.toml
-            # Update package.json
+            perl -pi -e "s/^version = \".*\"/version = \"${VERSION}\"/" src-tauri/Cargo.toml
             jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
           fi
 
-      - name: Build and publish desktop release
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+      - name: Build desktop app
+        id: build
+        shell: bash
+        run: npx tauri build ${{ matrix.target == 'macos' && '--target universal-apple-darwin' || '' }}
+
+      - name: Upload desktop bundles to release
+        uses: softprops/action-gh-release@v2
         with:
-          tagName: ${{ needs.validate.outputs.tag_name }}
-          releaseName: "karnameh v${{ needs.validate.outputs.version }}"
-          releaseBody: |
+          tag_name: ${{ needs.validate.outputs.tag_name }}
+          name: "karnameh v${{ needs.validate.outputs.version }}"
+          body: |
             karnameh v${{ needs.validate.outputs.version }}
 
             Download the appropriate file for your platform:
@@ -180,15 +141,19 @@ jobs:
             - macOS: .dmg (Intel + Apple Silicon)
             - Linux: .deb or .AppImage
             - Android: .apk (per ABI)
-
-            Auto-update is supported for desktop builds.
-          releaseDraft: false
           prerelease: ${{ needs.validate.outputs.is_prerelease }}
-          args: ${{ matrix.args }}
+          files: |
+            **/*.msi
+            **/*.exe
+            **/*.dmg
+            **/*.deb
+            **/*.AppImage
+            **/*.rpm
+            **/*.tar.gz
+            **/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # ─────────────────────────────────────────────────────
-  # ANDROID BUILD: Per-ABI Release APKs (optimized, stripped, signed)
-  # ─────────────────────────────────────────────────────
   build-android:
     name: Android APK
     needs: validate
@@ -198,26 +163,23 @@ jobs:
     env:
       NDK_VERSION: '27.0.11902837'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: 'npm'
 
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v3
 
       - name: Resolve NDK home
         id: ndk
+        shell: bash
         run: |
           sdkmanager --install "ndk;${NDK_VERSION}" "build-tools;34.0.0"
           echo "ndk_home=${ANDROID_HOME}/ndk/${NDK_VERSION}" >> "$GITHUB_OUTPUT"
@@ -237,28 +199,31 @@ jobs:
           workspaces: './src-tauri -> target'
 
       - name: Install frontend dependencies
+        shell: bash
         run: npm ci
 
       - name: Update version files
+        shell: bash
         run: |
           VERSION="${{ needs.validate.outputs.version }}"
           if [ -n "$VERSION" ]; then
             jq --arg v "$VERSION" '.version = $v' src-tauri/tauri.conf.json > tmp.json && mv tmp.json src-tauri/tauri.conf.json
-            sed -i "s/^version = \".*\"/version = \"${VERSION}\"/" src-tauri/Cargo.toml
+            perl -pi -e "s/^version = \".*\"/version = \"${VERSION}\"/" src-tauri/Cargo.toml
             jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
           fi
 
       - name: Initialize Tauri Android project
+        shell: bash
         run: npx tauri android init --ci
         env:
           NDK_HOME: ${{ steps.ndk.outputs.ndk_home }}
 
       - name: Generate Android signing keystore
+        shell: bash
         run: |
-          KEYSTORE_DIR="src-tauri/gen/android"
-          # Generate a CI keystore for signing
+          cd src-tauri/gen/android
           keytool -genkey -v \
-            -keystore "$KEYSTORE_DIR/release.keystore" \
+            -keystore release.keystore \
             -alias karnameh \
             -keyalg RSA \
             -keysize 2048 \
@@ -266,42 +231,85 @@ jobs:
             -storepass karnameh \
             -keypass karnameh \
             -dname "CN=KarNama, OU=Development, O=KarNama, L=Tehran, C=IR"
-
-          # Create keystore properties file
-          cat > "$KEYSTORE_DIR/keystore.properties" << 'EOF'
+          cat > keystore.properties << 'PROP_EOF'
           storeFile=release.keystore
           storePassword=karnameh
           keyAlias=karnameh
           keyPassword=karnameh
-          EOF
+          PROP_EOF
 
-      - name: Configure Android build for per-ABI APKs + signing
+      - name: Patch build.gradle.kts for signing + ABI splits
+        shell: bash
         run: |
           BUILD_FILE="src-tauri/gen/android/app/build.gradle.kts"
-          if [ -f "$BUILD_FILE" ]; then
-            # Add signing config after the android block opening
-            perl -i -pe 's/android \{/android {\n    signingConfigs {\n        create("release") {\n            val keystorePropertiesFile = rootProject.file("keystore.properties")\n            val keystoreProperties = Properties()\n            if (keystorePropertiesFile.exists()) {\n                keystoreProperties.load(FileInputStream(keystorePropertiesFile))\n            }\n            keyAlias = keystoreProperties["keyAlias"] as String\n            keyPassword = keystoreProperties["password"] as String\n            storeFile = file(keystoreProperties["storeFile"] as String)\n            storePassword = keystoreProperties["password"] as String\n        }\n    }\n/' "$BUILD_FILE"
-
-            # Apply signing to release build type
-            perl -i -pe 's/getByName\("release"\) \{/getByName("release") {\n            signingConfig = signingConfigs.getByName("release")/' "$BUILD_FILE"
-
-            # Add ABI splits before defaultConfig
-            perl -i -pe 's/defaultConfig \{/splits {\n        abi {\n            enable true\n            reset()\n            include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"\n            universalApk false\n        }\n    }\n\n    defaultConfig {/' "$BUILD_FILE"
-
-            echo "Patched $BUILD_FILE"
-            cat "$BUILD_FILE"
-          else
-            echo "WARNING: $BUILD_FILE not found"
-            find src-tauri/gen/android -name "build.gradle*" -type f 2>/dev/null
+          if [ ! -f "$BUILD_FILE" ]; then
+            echo "[ERROR] $BUILD_FILE not found"
+            find src-tauri/gen/android -name "build.gradle*" -type f
+            exit 1
           fi
 
-      - name: Build Android release APK (per ABI, optimized)
+          python3 -c "
+import re
+
+with open('$BUILD_FILE') as f:
+    content = f.read()
+
+# 1. Add import for FileInputStream
+if 'import java.io.FileInputStream' not in content:
+    content = 'import java.io.FileInputStream\n\n' + content
+
+# 2. Add signing configs after android {
+signing_block = '''    signingConfigs {
+        create(\"release\") {
+            val keystorePropertiesFile = rootProject.file(\"keystore.properties\")
+            val keystoreProperties = Properties()
+            if (keystorePropertiesFile.exists()) {
+                keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+            }
+            keyAlias = keystoreProperties[\"keyAlias\"] as String
+            keyPassword = keystoreProperties[\"password\"] as String
+            storeFile = file(keystoreProperties[\"storeFile\"] as String)
+            storePassword = keystoreProperties[\"password\"] as String
+        }
+    }
+
+'''
+content = content.replace('android {', 'android {\n' + signing_block)
+
+# 3. Apply signing to release build type
+content = content.replace(
+    'getByName(\"release\") {',
+    'getByName(\"release\") {\n            signingConfig = signingConfigs.getByName(\"release\")'
+)
+
+# 4. Add ABI splits before defaultConfig
+splits_block = '''    splits {
+        abi {
+            isUniversalApk = false
+            reset()
+            include(\"arm64-v8a\", \"armeabi-v7a\", \"x86\", \"x86_64\")
+        }
+    }
+
+    defaultConfig {'''
+content = content.replace('defaultConfig {', splits_block)
+
+with open('$BUILD_FILE', 'w') as f:
+    f.write(content)
+
+print('=== Patched $BUILD_FILE ===')
+print(content)
+"
+
+      - name: Build Android release APK (per ABI)
+        shell: bash
         run: npx tauri android build --apk
         env:
           NDK_HOME: ${{ steps.ndk.outputs.ndk_home }}
 
       - name: Stage and rename APKs
         id: stage
+        shell: bash
         run: |
           set -euo pipefail
           STAGE="${RUNNER_TEMP}/apk"
@@ -317,7 +325,7 @@ jobs:
             esac
           done < <(find src-tauri/gen/android/app/build/outputs/apk -name '*.apk')
 
-          echo "Found staged APKs:"
+          echo "Staged APKs:"
           ls -lh "$STAGE"
           echo "stage_dir=$STAGE" >> "$GITHUB_OUTPUT"
 
@@ -329,11 +337,3 @@ jobs:
           prerelease: ${{ needs.validate.outputs.is_prerelease }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload APK build artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-apk
-          path: ${{ steps.stage.outputs.stage_dir }}/*.apk
-          if-no-files-found: warn
