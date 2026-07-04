@@ -1,43 +1,50 @@
 :root {
-  /* ─── TRUE DARK PALETTE (not inverted, designed from scratch) ─── */
-  --color-bg:              #0a0a0a;
-  --color-surface-0:       #0a0a0a;   /* page bg */
-  --color-surface-1:       #111111;   /* card level 1 */
-  --color-surface-2:       #1a1a1a;   /* card level 2 / hover */
-  --color-surface-3:       #222222;   /* card level 3 / pressed */
+  /* ─── TRUE DARK PALETTE — KarNama Brand ─── */
+  --color-bg:              #0F172A;
+  --color-surface-0:       #0F172A;   /* page bg */
+  --color-surface-1:       #1E2937;   /* card level 1 */
+  --color-surface-2:       #273548;   /* card level 2 / hover */
+  --color-surface-3:       #334155;   /* card level 3 / pressed */
 
   /* Aliases for backwards compat */
   --color-surface:         var(--color-surface-1);
   --color-surface-hover:   var(--color-surface-2);
   --color-surface-active:  var(--color-surface-3);
 
-  --color-border:          rgba(255, 255, 255, 0.07);
+  --color-border:          rgba(255, 255, 255, 0.08);
   --color-border-subtle:   rgba(255, 255, 255, 0.04);
-  --color-border-strong:   rgba(255, 255, 255, 0.14);
-  --color-border-glow:     rgba(99, 102, 241, 0.3);
+  --color-border-strong:   rgba(255, 255, 255, 0.15);
+  --color-border-glow:     rgba(20, 93, 162, 0.4);
 
   /* Translucent page background used for sticky/floating bars (header, nav).
      Defined as an RGB triplet so it can be reused with custom alpha. */
-  --color-bg-rgb:           10, 10, 10;
-  --color-bg-translucent:   rgba(10, 10, 10, 0.8);
+  --color-bg-rgb:           15, 23, 42;
+  --color-bg-translucent:   rgba(15, 23, 42, 0.85);
 
-  /* ─── ACCENT SYSTEM ─── */
-  --color-primary:         #6366f1;
-  --color-primary-hover:   #818cf8;
-  --color-primary-active:  #4f46e5;
-  --color-primary-muted:   rgba(99, 102, 241, 0.1);
-  --color-primary-glow:    rgba(99, 102, 241, 0.25);
+  /* ─── ACCENT SYSTEM — Brand Blue #145DA2 + Orange #E89C2C ─── */
+  --color-primary:         #145DA2;
+  --color-primary-hover:   #1a6fc0;
+  --color-primary-active:  #0e4a85;
+  --color-primary-muted:   rgba(20, 93, 162, 0.15);
+  --color-primary-glow:    rgba(20, 93, 162, 0.3);
 
-  --color-secondary:       #a78bfa;
+  --color-secondary:       #E89C2C;
+  --color-secondary-hover: #f0ab45;
+  --color-secondary-active: #d08a1f;
+  --color-secondary-muted: rgba(232, 156, 44, 0.12);
+  --color-secondary-glow:  rgba(232, 156, 44, 0.25);
+
   --color-success:         #22c55e;
-  --color-success-muted:   rgba(34, 197, 94, 0.1);
+  --color-success-muted:   rgba(34, 197, 94, 0.12);
   --color-success-glow:    rgba(34, 197, 94, 0.2);
-  --color-warning:         #f59e0b;
-  --color-warning-muted:   rgba(245, 158, 11, 0.1);
+  --color-warning:         #E89C2C;
+  --color-warning-muted:   rgba(232, 156, 44, 0.12);
+  --color-warning-glow:    rgba(232, 156, 44, 0.2);
   --color-danger:          #ef4444;
-  --color-danger-muted:    rgba(239, 68, 68, 0.1);
-  --color-streak:          #fb923c;
-  --color-streak-glow:     rgba(251, 146, 60, 0.25);
+  --color-danger-muted:    rgba(239, 68, 68, 0.12);
+  --color-danger-glow:     rgba(239, 68, 68, 0.2);
+  --color-streak:          #E89C2C;
+  --color-streak-glow:     rgba(232, 156, 44, 0.3);
 
   /* ─── TYPOGRAPHY SCALE (Linear-style optical hierarchy) ───
      Fluid: each scale uses clamp() so headings shrink on phones and grow on
@@ -88,11 +95,11 @@
   --text-xs-leading:       1.4;
 
   /* ─── TEXT COLOURS ─── */
-  --color-text:            #ededed;
-  --color-text-secondary:  #a0a0a0;
-  --color-text-muted:      #6b6b6b;
-  --color-text-faint:      #3a3a3a;
-  --color-text-inverse:    #0a0a0a;
+  --color-text:            #F1F5F9;
+  --color-text-secondary:  #94A3B8;
+  --color-text-muted:      #64748B;
+  --color-text-faint:      #475569;
+  --color-text-inverse:    #0F172A;
 
   /* ─── SPACING SYSTEM ─── */
   --space-0:   0px;
@@ -180,32 +187,32 @@
 
 /* ─── LIGHT THEME ─── */
 [data-theme='light'] {
-  --color-bg-rgb:           245, 245, 245;
-  --color-bg-translucent:   rgba(245, 245, 245, 0.8);
-  --color-bg:              #f5f5f5;
-  --color-surface-0:       #f5f5f5;
+  --color-bg-rgb:           241, 245, 249;
+  --color-bg-translucent:   rgba(241, 245, 249, 0.85);
+  --color-bg:              #F1F5F9;
+  --color-surface-0:       #F1F5F9;
   --color-surface-1:       #ffffff;
-  --color-surface-2:       #f0f0f0;
-  --color-surface-3:       #e8e8e8;
+  --color-surface-2:       #E2E8F0;
+  --color-surface-3:       #CBD5E1;
   --color-surface:         var(--color-surface-1);
   --color-surface-hover:   var(--color-surface-2);
   --color-surface-active:  var(--color-surface-3);
 
-  --color-border:          rgba(0, 0, 0, 0.07);
-  --color-border-subtle:   rgba(0, 0, 0, 0.04);
-  --color-border-strong:   rgba(0, 0, 0, 0.14);
+  --color-border:          rgba(15, 23, 42, 0.08);
+  --color-border-subtle:   rgba(15, 23, 42, 0.04);
+  --color-border-strong:   rgba(15, 23, 42, 0.15);
 
-  --color-text:            #111111;
-  --color-text-secondary:  #555555;
-  --color-text-muted:      #888888;
-  --color-text-faint:      #cccccc;
-  --color-text-inverse:    #ffffff;
+  --color-text:            #0F172A;
+  --color-text-secondary:  #475569;
+  --color-text-muted:      #94A3B8;
+  --color-text-faint:      #CBD5E1;
+  --color-text-inverse:    #F1F5F9;
 
-  --shadow-1:   0 1px 3px rgba(0,0,0,0.08);
-  --shadow-2:   0 2px 8px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-3:   0 4px 16px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.07);
-  --shadow-4:   0 12px 32px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08);
-  --shadow-5:   0 24px 64px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.10);
+  --shadow-1:   0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-2:   0 4px 12px rgba(15,23,42,0.07), 0 2px 4px rgba(15,23,42,0.04);
+  --shadow-3:   0 8px 24px rgba(15,23,42,0.09), 0 4px 8px rgba(15,23,42,0.05);
+  --shadow-4:   0 16px 48px rgba(15,23,42,0.11), 0 8px 16px rgba(15,23,42,0.06);
+  --shadow-5:   0 24px 64px rgba(15,23,42,0.14), 0 12px 24px rgba(15,23,42,0.08);
   --shadow-sm:  var(--shadow-1);
   --shadow-md:  var(--shadow-3);
   --shadow-lg:  var(--shadow-4);

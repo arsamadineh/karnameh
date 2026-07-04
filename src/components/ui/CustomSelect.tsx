@@ -129,8 +129,8 @@ export const CustomSelect: Component<CustomSelectProps> = (props) => {
                   'text-align': 'right',
                   'font-size': 'var(--text-body-size)',
                   'border-radius': 'var(--radius-sm)',
-                  color: isSelected() ? 'var(--color-primary)' : 'var(--color-text)',
-                  'background-color': isSelected() ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                  color: isSelected() ? 'var(--color-secondary)' : 'var(--color-text)',
+                  'background-color': isSelected() ? 'var(--color-secondary-muted)' : 'transparent',
                   transition: 'background-color var(--transition-fast), color var(--transition-fast)'
                 }}
                 onMouseEnter={(e) => {

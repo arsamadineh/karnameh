@@ -79,17 +79,17 @@ const Header: Component<HeaderProps> = (props) => {
               width: '40px',
               height: '40px',
               'border-radius': 'var(--radius-round)',
-              'background-color': 'var(--color-primary)',
+              'background-color': 'var(--color-secondary)',
               display: 'flex',
               'align-items': 'center',
               'justify-content': 'center',
-              color: 'white',
+              color: '#0F172A',
               'font-weight': 'bold',
               'font-size': 'var(--text-body-size)',
               border: '2px solid transparent',
               transition: 'all var(--transition-fast)'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-border-glow)'}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-secondary-glow)'}
             onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
           >
             {userName()?.charAt(0) || 'ک'}

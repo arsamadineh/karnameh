@@ -51,7 +51,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
   return (
     <aside style={{
       width: collapsed() ? 'var(--layout-sidebar-collapsed)' : 'var(--layout-sidebar-width)',
-      'background-color': 'var(--color-surface)',
+      'background-color': 'var(--color-surface-1)',
       'border-right': '1px solid var(--color-border)',
       display: 'flex',
       'flex-direction': 'column',
@@ -165,11 +165,11 @@ const Sidebar: Component<SidebarProps> = (props) => {
             width: '38px',
             height: '38px',
             'border-radius': 'var(--radius-round)',
-            'background-color': 'var(--color-primary)',
+            'background-color': 'var(--color-secondary)',
             display: 'flex',
             'align-items': 'center',
             'justify-content': 'center',
-            color: 'white',
+            color: '#0F172A',
             'font-weight': 'bold',
             'font-size': 'var(--text-body-size)',
             'flex-shrink': 0

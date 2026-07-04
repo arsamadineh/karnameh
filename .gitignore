@@ -26,6 +26,7 @@ src-tauri/**/*.db-shm
 src-tauri/**/*.db-wal
 !src-tauri/.sqlx/
 *.local
+src-tauri/icons/source.png
 
 # --- Android Build Artifacts ---
 src-tauri/gen/android/

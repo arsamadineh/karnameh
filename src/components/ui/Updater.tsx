@@ -64,11 +64,11 @@ const Updater: Component = () => {
         bottom: '100px',
         left: '50%',
         transform: 'translateX(-50%)',
-        'background-color': 'var(--color-surface)',
-        border: '1px solid var(--color-primary)',
+        'background-color': 'var(--color-surface-1)',
+        border: '1px solid var(--color-secondary)',
         'border-radius': 'var(--radius-lg)',
         padding: 'var(--space-4)',
-        'box-shadow': '0 8px 30px rgba(0, 0, 0, 0.4)',
+        'box-shadow': '0 8px 30px rgba(15, 23, 42, 0.5)',
         'z-index': 9999,
         width: '340px',
         display: 'flex',
@@ -77,7 +77,7 @@ const Updater: Component = () => {
       }}>
         <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
           <h3 style={{ margin: 0, color: 'var(--color-text)', 'font-size': 'var(--text-h2-size)', 'font-weight': 'bold' }}>بروزرسانی جدید در دسترس است!</h3>
-          <span class="badge badge-primary" style={{ 'background-color': 'var(--color-primary-muted)', color: 'var(--color-primary)' }}>
+          <span class="badge badge-primary" style={{ 'background-color': 'var(--color-secondary-muted)', color: 'var(--color-secondary)' }}>
             v{updateInfo()?.version}
           </span>
         </div>
