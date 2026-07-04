@@ -248,11 +248,15 @@ jobs:
             jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
           fi
 
+      - name: Initialize Tauri Android project
+        run: npx tauri android init --ci
+        env:
+          NDK_HOME: ${{ steps.ndk.outputs.ndk_home }}
+
       - name: Generate Android signing keystore
         run: |
           KEYSTORE_DIR="src-tauri/gen/android"
-          mkdir -p "$KEYSTORE_DIR"
-          # Generate a debug keystore for CI signing
+          # Generate a CI keystore for signing
           keytool -genkey -v \
             -keystore "$KEYSTORE_DIR/release.keystore" \
             -alias karnameh \
@@ -270,11 +274,6 @@ jobs:
           keyAlias=karnameh
           keyPassword=karnameh
           EOF
-
-      - name: Initialize Tauri Android project
-        run: npx tauri android init --ci
-        env:
-          NDK_HOME: ${{ steps.ndk.outputs.ndk_home }}
 
       - name: Configure Android build for per-ABI APKs + signing
         run: |
