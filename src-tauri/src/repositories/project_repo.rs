@@ -1,9 +1,9 @@
+use chrono::Utc;
 use sqlx::SqlitePool;
 use uuid::Uuid;
-use chrono::Utc;
 
-use crate::models::project::Project;
 use crate::error::AppError;
+use crate::models::project::Project;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -68,7 +68,10 @@ pub async fn get_project_by_id(pool: &SqlitePool, id: &str) -> Result<Project, A
     Ok(project)
 }
 
-pub async fn create_project(pool: &SqlitePool, input: CreateProjectInput) -> Result<Project, AppError> {
+pub async fn create_project(
+    pool: &SqlitePool,
+    input: CreateProjectInput,
+) -> Result<Project, AppError> {
     let id = Uuid::new_v4().to_string();
     let now = Utc::now().to_rfc3339();
     let description = input.description.unwrap_or_default();
@@ -103,9 +106,12 @@ pub async fn create_project(pool: &SqlitePool, input: CreateProjectInput) -> Res
     get_project_by_id(pool, &id).await
 }
 
-pub async fn update_project(pool: &SqlitePool, input: UpdateProjectInput) -> Result<Project, AppError> {
+pub async fn update_project(
+    pool: &SqlitePool,
+    input: UpdateProjectInput,
+) -> Result<Project, AppError> {
     let now = Utc::now().to_rfc3339();
-    
+
     sqlx::query!(
         r#"
         UPDATE projects

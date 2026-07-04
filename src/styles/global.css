@@ -353,6 +353,30 @@ input[type="number"] { -moz-appearance: textfield; }
 .sidebar-item.active:hover { background-color: var(--color-primary-muted); }
 .sidebar-icon { width: 18px; height: 18px; flex-shrink: 0; }
 
+/* Sidebar tooltip (shown when collapsed) */
+.sidebar-tooltip {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: var(--space-2);
+  background-color: var(--color-surface-3);
+  color: var(--color-text);
+  padding: var(--space-1-5) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs-size);
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  z-index: 100;
+  box-shadow: var(--shadow-2);
+}
+.sidebar-item-wrapper:hover .sidebar-tooltip {
+  opacity: 1;
+}
+
 /* Sidebar menu items (dropdown style) */
 .sidebar-menu-item {
   background-color: transparent;

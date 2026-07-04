@@ -1,7 +1,10 @@
-use sqlx::{sqlite::{SqliteConnectOptions, SqlitePoolOptions}, SqlitePool};
-use std::str::FromStr;
-use std::path::PathBuf;
 use crate::error::AppError;
+use sqlx::{
+    sqlite::{SqliteConnectOptions, SqlitePoolOptions},
+    SqlitePool,
+};
+use std::path::PathBuf;
+use std::str::FromStr;
 
 pub async fn init_db(app_dir: &PathBuf) -> Result<SqlitePool, AppError> {
     // Ensure the app directory exists

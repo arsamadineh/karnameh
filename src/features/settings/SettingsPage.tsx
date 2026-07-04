@@ -40,8 +40,13 @@ const SettingsPage: Component = () => {
       } else {
         setUpdateMessage('شما از آخرین نسخه استفاده می‌کنید.');
       }
-    } catch (err) {
-      setUpdateMessage('خطا در بررسی بروزرسانی.');
+    } catch (err: any) {
+      const msg = err?.toString?.() || '';
+      if (msg.includes('JSON') || msg.includes('parse') || msg.includes('404') || msg.includes('Not Found')) {
+        setUpdateMessage('نسخه جدیدی منتشر نشده است.');
+      } else {
+        setUpdateMessage('خطا در بررسی بروزرسانی. اتصال اینترنت خود را بررسی کنید.');
+      }
     } finally {
       setIsCheckingUpdate(false);
     }

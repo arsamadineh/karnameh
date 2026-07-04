@@ -33,7 +33,6 @@ const Sidebar: Component<SidebarProps> = (props) => {
     { id: 'settings', label: 'تنظیمات', icon: IconSettings },
   ];
 
-  // Close profile menu on clicking outside
   const closeProfileMenu = (e: MouseEvent) => {
     if (profileRef && !profileRef.contains(e.target as Node)) {
       setShowProfileMenu(false);
@@ -47,11 +46,13 @@ const Sidebar: Component<SidebarProps> = (props) => {
     });
   }
 
+  const collapsed = () => isSidebarCollapsed();
+
   return (
     <aside style={{
-      width: isSidebarCollapsed() ? 'var(--layout-sidebar-collapsed)' : 'var(--layout-sidebar-width)',
+      width: collapsed() ? 'var(--layout-sidebar-collapsed)' : 'var(--layout-sidebar-width)',
       'background-color': 'var(--color-surface)',
-      'border-left': '1px solid var(--color-border)',
+      'border-right': '1px solid var(--color-border)',
       display: 'flex',
       'flex-direction': 'column',
       padding: 'var(--space-5) 0',
@@ -60,38 +61,26 @@ const Sidebar: Component<SidebarProps> = (props) => {
       transition: 'width 300ms cubic-bezier(0.4, 0, 0.2, 1)',
       'z-index': 20,
       'position': 'relative',
-      'flex-shrink': 0
+      'flex-shrink': 0,
+      overflow: 'hidden'
     }}>
-      <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-8)' }}>
-        {/* Logo Section */}
+      {/* Top section: logo + nav */}
+      <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-6)' }}>
+        {/* Logo + Collapse toggle */}
         <div style={{ 
-          padding: isSidebarCollapsed() ? '0 var(--space-3)' : '0 var(--space-6)', 
+          padding: collapsed() ? '0 var(--space-2)' : '0 var(--space-5)', 
           display: 'flex', 
-          'flex-direction': isSidebarCollapsed() ? 'column' : 'row',
+          'flex-direction': 'column',
           'align-items': 'center', 
-          'justify-content': isSidebarCollapsed() ? 'center' : 'space-between',
           gap: 'var(--space-3)',
-          transition: 'all 300ms ease-in-out'
+          transition: 'padding 300ms ease-in-out'
         }}>
-          <div style={{ display: 'flex', 'align-items': 'center', gap: 'var(--space-3)' }}>
+          <div style={{ display: 'flex', 'align-items': 'center', 'justify-content': 'center' }}>
             <IconLogo />
-            <span style={{ 
-              'font-size': 'var(--text-h1-size)', 
-              color: 'var(--color-text)', 
-              'font-weight': 700, 
-              'letter-spacing': '-0.5px',
-              opacity: isSidebarCollapsed() ? 0 : 1,
-              width: isSidebarCollapsed() ? '0px' : 'auto',
-              overflow: 'hidden',
-              'white-space': 'nowrap',
-              transition: 'opacity 200ms ease-in-out, width 200ms ease-in-out'
-            }}>
-              کارنامه
-            </span>
           </div>
           <button 
             type="button"
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed())}
+            onClick={() => setIsSidebarCollapsed(!collapsed())}
             style={{
               padding: '6px',
               'border-radius': 'var(--radius-md)',
@@ -101,46 +90,45 @@ const Sidebar: Component<SidebarProps> = (props) => {
               'justify-content': 'center',
               'background-color': 'rgba(255,255,255,0.01)',
               color: 'var(--color-text-muted)',
-              'margin-top': isSidebarCollapsed() ? 'var(--space-2)' : '0'
+              transition: 'all var(--transition-fast)'
             }}
           >
-            {isSidebarCollapsed() ? <IconChevronLeft style={{ width: '16px', height: '16px' }} /> : <IconChevronRight style={{ width: '16px', height: '16px' }} />}
+            {collapsed() ? <IconChevronLeft style={{ width: '16px', height: '16px' }} /> : <IconChevronRight style={{ width: '16px', height: '16px' }} />}
           </button>
         </div>
 
-        {/* Navigation Items */}
-        <nav style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)', padding: isSidebarCollapsed() ? '0 var(--space-2)' : '0 var(--space-3)' }}>
+        {/* Nav Items */}
+        <nav style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)', padding: collapsed() ? '0 var(--space-2)' : '0 var(--space-3)' }}>
           <For each={menuItems}>
             {(item) => {
               const isActive = () => props.currentView === item.id;
               const Icon = item.icon;
               return (
-                <div class="sidebar-item-wrapper">
+                <div class="sidebar-item-wrapper" style={{ position: 'relative' }}>
                   <button
                     onClick={() => props.setView(item.id)}
                     classList={{ 'sidebar-item': true, 'active': isActive() }}
                     style={{
                       display: 'flex',
                       'align-items': 'center',
-                      gap: isSidebarCollapsed() ? '0' : 'var(--space-3)',
-                      'justify-content': isSidebarCollapsed() ? 'center' : 'flex-start',
-                      padding: isSidebarCollapsed() ? 'var(--space-3) 0' : 'var(--space-3) var(--space-4)',
+                      gap: collapsed() ? '0' : 'var(--space-3)',
+                      'justify-content': 'center',
+                      padding: collapsed() ? 'var(--space-3) 0' : 'var(--space-3) var(--space-4)',
                       width: '100%',
                       transition: 'all 300ms ease-in-out'
                     }}
                   >
-                    <Icon class="sidebar-icon" />
+                    <Icon class="sidebar-icon" style={{ width: collapsed() ? '20px' : '18px', height: collapsed() ? '20px' : '18px' }} />
                     <span style={{
                       'font-size': 'var(--text-body-size)',
-                      opacity: isSidebarCollapsed() ? 0 : 1,
-                      transform: isSidebarCollapsed() ? 'translateX(10px)' : 'translateX(0)',
-                      transition: 'opacity 200ms ease-in-out, transform 200ms ease-in-out',
-                      'white-space': 'nowrap',
+                      opacity: collapsed() ? 0 : 1,
+                      'max-width': collapsed() ? '0px' : '200px',
                       overflow: 'hidden',
-                      width: isSidebarCollapsed() ? '0px' : 'auto'
+                      'white-space': 'nowrap',
+                      transition: 'opacity 200ms ease-in-out, max-width 200ms ease-in-out'
                     }}>{item.label}</span>
                   </button>
-                  <Show when={isSidebarCollapsed()}>
+                  <Show when={collapsed()}>
                     <div class="sidebar-tooltip">{item.label}</div>
                   </Show>
                 </div>
@@ -154,18 +142,18 @@ const Sidebar: Component<SidebarProps> = (props) => {
       <div 
         ref={profileRef}
         style={{ 
-          padding: isSidebarCollapsed() ? '0 var(--space-2)' : '0 var(--space-4)',
+          padding: collapsed() ? '0 var(--space-2)' : '0 var(--space-4)',
           position: 'relative'
         }}
       >
         <div 
-          onClick={() => showProfileMenu() ? setShowProfileMenu(false) : setShowProfileMenu(true)}
+          onClick={() => setShowProfileMenu(!showProfileMenu())}
           style={{
             display: 'flex',
             'align-items': 'center',
-            'justify-content': isSidebarCollapsed() ? 'center' : 'flex-start',
-            gap: isSidebarCollapsed() ? '0' : 'var(--space-3)',
-            padding: isSidebarCollapsed() ? 'var(--space-2) 0' : 'var(--space-3)',
+            'justify-content': 'center',
+            gap: collapsed() ? '0' : 'var(--space-3)',
+            padding: collapsed() ? 'var(--space-2) 0' : 'var(--space-3)',
             'border-radius': 'var(--radius-lg)',
             'background-color': 'rgba(255, 255, 255, 0.02)',
             border: '1px solid var(--color-border)',
@@ -183,17 +171,17 @@ const Sidebar: Component<SidebarProps> = (props) => {
             'justify-content': 'center',
             color: 'white',
             'font-weight': 'bold',
-              'font-size': 'var(--text-body-size)',
-              'flex-shrink': 0
+            'font-size': 'var(--text-body-size)',
+            'flex-shrink': 0
           }}>
             آ
           </div>
           
           <div style={{ 
             overflow: 'hidden',
-            width: isSidebarCollapsed() ? '0px' : 'auto',
-            opacity: isSidebarCollapsed() ? 0 : 1,
-            transition: 'opacity 200ms ease-in-out, width 200ms ease-in-out',
+            'max-width': collapsed() ? '0px' : '200px',
+            opacity: collapsed() ? 0 : 1,
+            transition: 'opacity 200ms ease-in-out, max-width 200ms ease-in-out',
             'white-space': 'nowrap'
           }}>
             <h4 style={{ 'font-size': 'var(--text-body-size)', 'font-weight': 600, color: 'var(--color-text)', 'text-overflow': 'ellipsis', 'white-space': 'nowrap' }}>
@@ -203,13 +191,13 @@ const Sidebar: Component<SidebarProps> = (props) => {
           </div>
         </div>
 
-        {/* Options Menu on Click */}
+        {/* Profile Dropdown Menu */}
         <Show when={showProfileMenu()}>
           <div style={{
             position: 'absolute',
             bottom: '50px',
-            right: isSidebarCollapsed() ? '10px' : '16px',
-            left: isSidebarCollapsed() ? 'auto' : '16px',
+            right: collapsed() ? '8px' : '16px',
+            left: collapsed() ? 'auto' : '16px',
             'background-color': 'var(--color-surface)',
             border: '1px solid var(--color-border)',
             'border-radius': 'var(--radius-md)',
@@ -218,10 +206,8 @@ const Sidebar: Component<SidebarProps> = (props) => {
             display: 'flex',
             'flex-direction': 'column',
             gap: '2px',
-            'min-width': isSidebarCollapsed() ? '150px' : 'auto',
-            'z-index': 1000,
-            transform: isSidebarCollapsed() ? 'translateX(-80px)' : 'translateY(-10px)',
-            transition: 'all 200ms ease-in-out'
+            'min-width': '160px',
+            'z-index': 1000
           }}
           class="animate-fade-in"
           >

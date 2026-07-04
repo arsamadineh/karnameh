@@ -1,9 +1,9 @@
-use tauri::State;
 use sqlx::SqlitePool;
+use tauri::State;
 
+use crate::error::AppError;
 use crate::models::task::Task;
 use crate::repositories::task_repo::{self, CreateTaskInput, UpdateTaskInput};
-use crate::error::AppError;
 
 #[tauri::command]
 pub async fn get_tasks(pool: State<'_, SqlitePool>) -> Result<Vec<Task>, AppError> {
@@ -16,12 +16,18 @@ pub async fn get_task(pool: State<'_, SqlitePool>, id: String) -> Result<Task, A
 }
 
 #[tauri::command]
-pub async fn create_task(pool: State<'_, SqlitePool>, input: CreateTaskInput) -> Result<Task, AppError> {
+pub async fn create_task(
+    pool: State<'_, SqlitePool>,
+    input: CreateTaskInput,
+) -> Result<Task, AppError> {
     task_repo::create_task(&pool, input).await
 }
 
 #[tauri::command]
-pub async fn update_task(pool: State<'_, SqlitePool>, input: UpdateTaskInput) -> Result<Task, AppError> {
+pub async fn update_task(
+    pool: State<'_, SqlitePool>,
+    input: UpdateTaskInput,
+) -> Result<Task, AppError> {
     task_repo::update_task(&pool, input).await
 }
 

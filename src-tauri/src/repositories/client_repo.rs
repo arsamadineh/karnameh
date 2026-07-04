@@ -1,9 +1,9 @@
+use chrono::Utc;
 use sqlx::SqlitePool;
 use uuid::Uuid;
-use chrono::Utc;
 
-use crate::models::client::{Client, CreateClientInput, UpdateClientInput};
 use crate::error::AppError;
+use crate::models::client::{Client, CreateClientInput, UpdateClientInput};
 
 pub async fn get_all_clients(pool: &SqlitePool) -> Result<Vec<Client>, AppError> {
     let clients = sqlx::query_as!(
@@ -40,7 +40,10 @@ pub async fn get_client_by_id(pool: &SqlitePool, id: &str) -> Result<Client, App
     Ok(client)
 }
 
-pub async fn create_client(pool: &SqlitePool, input: CreateClientInput) -> Result<Client, AppError> {
+pub async fn create_client(
+    pool: &SqlitePool,
+    input: CreateClientInput,
+) -> Result<Client, AppError> {
     let id = Uuid::new_v4().to_string();
     let now = Utc::now().to_rfc3339();
     let color = input.color.unwrap_or_else(|| "#6366f1".to_string());
@@ -70,13 +73,16 @@ pub async fn create_client(pool: &SqlitePool, input: CreateClientInput) -> Resul
     get_client_by_id(pool, &id).await
 }
 
-pub async fn update_client(pool: &SqlitePool, input: UpdateClientInput) -> Result<Client, AppError> {
+pub async fn update_client(
+    pool: &SqlitePool,
+    input: UpdateClientInput,
+) -> Result<Client, AppError> {
     let now = Utc::now().to_rfc3339();
-    
-    // Fetch existing client first to merge fields if needed, 
+
+    // Fetch existing client first to merge fields if needed,
     // or we can use COALESCE in SQL but since we might update individual fields,
     // we use a dynamic approach or just update provided fields using SQL COALESCE.
-    
+
     sqlx::query!(
         r#"
         UPDATE clients
@@ -110,7 +116,7 @@ pub async fn update_client(pool: &SqlitePool, input: UpdateClientInput) -> Resul
 
 pub async fn delete_client(pool: &SqlitePool, id: &str) -> Result<(), AppError> {
     let now = Utc::now().to_rfc3339();
-    
+
     // Soft delete
     sqlx::query!(
         r#"

@@ -1,9 +1,9 @@
+use chrono::Utc;
 use sqlx::SqlitePool;
 use uuid::Uuid;
-use chrono::Utc;
 
-use crate::models::task::Task;
 use crate::error::AppError;
+use crate::models::task::Task;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -99,7 +99,7 @@ pub async fn create_task(pool: &SqlitePool, input: CreateTaskInput) -> Result<Ta
 
 pub async fn update_task(pool: &SqlitePool, input: UpdateTaskInput) -> Result<Task, AppError> {
     let now = Utc::now().to_rfc3339();
-    
+
     sqlx::query!(
         r#"
         UPDATE tasks

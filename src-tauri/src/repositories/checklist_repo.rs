@@ -1,9 +1,9 @@
+use chrono::Utc;
 use sqlx::SqlitePool;
 use uuid::Uuid;
-use chrono::Utc;
 
-use crate::models::checklist::{Checklist, ChecklistItem};
 use crate::error::AppError;
+use crate::models::checklist::{Checklist, ChecklistItem};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -35,7 +35,10 @@ pub async fn get_checklists(pool: &SqlitePool) -> Result<Vec<Checklist>, AppErro
     Ok(checklists)
 }
 
-pub async fn get_checklist_by_date(pool: &SqlitePool, date: &str) -> Result<Option<Checklist>, AppError> {
+pub async fn get_checklist_by_date(
+    pool: &SqlitePool,
+    date: &str,
+) -> Result<Option<Checklist>, AppError> {
     let checklist = sqlx::query_as!(
         Checklist,
         r#"
@@ -52,7 +55,10 @@ pub async fn get_checklist_by_date(pool: &SqlitePool, date: &str) -> Result<Opti
     Ok(checklist)
 }
 
-pub async fn get_checklist_items(pool: &SqlitePool, checklist_id: &str) -> Result<Vec<ChecklistItem>, AppError> {
+pub async fn get_checklist_items(
+    pool: &SqlitePool,
+    checklist_id: &str,
+) -> Result<Vec<ChecklistItem>, AppError> {
     let items = sqlx::query_as!(
         ChecklistItem,
         r#"
@@ -70,7 +76,10 @@ pub async fn get_checklist_items(pool: &SqlitePool, checklist_id: &str) -> Resul
     Ok(items)
 }
 
-pub async fn create_checklist(pool: &SqlitePool, input: CreateChecklistInput) -> Result<Checklist, AppError> {
+pub async fn create_checklist(
+    pool: &SqlitePool,
+    input: CreateChecklistInput,
+) -> Result<Checklist, AppError> {
     let id = Uuid::new_v4().to_string();
     let now = Utc::now().to_rfc3339();
     let notes = input.notes.unwrap_or_default();
@@ -100,9 +109,12 @@ pub async fn create_checklist(pool: &SqlitePool, input: CreateChecklistInput) ->
     Ok(checklist)
 }
 
-pub async fn add_checklist_item(pool: &SqlitePool, input: CreateChecklistItemInput) -> Result<ChecklistItem, AppError> {
+pub async fn add_checklist_item(
+    pool: &SqlitePool,
+    input: CreateChecklistItemInput,
+) -> Result<ChecklistItem, AppError> {
     let id = Uuid::new_v4().to_string();
-    
+
     sqlx::query!(
         r#"
         INSERT INTO checklist_items (id, checklist_id, text, done, sort_order)
@@ -125,7 +137,11 @@ pub async fn add_checklist_item(pool: &SqlitePool, input: CreateChecklistItemInp
     Ok(item)
 }
 
-pub async fn toggle_checklist_item(pool: &SqlitePool, id: &str, done: bool) -> Result<(), AppError> {
+pub async fn toggle_checklist_item(
+    pool: &SqlitePool,
+    id: &str,
+    done: bool,
+) -> Result<(), AppError> {
     let done_int = if done { 1 } else { 0 };
     sqlx::query!(
         r#"
