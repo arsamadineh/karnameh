@@ -7,12 +7,12 @@ set -e
 VERSION=${1:-""}
 ERRORS=0
 
-echo "🔍 Validating release readiness..."
+echo "[VALIDATE] Validating release readiness..."
 echo ""
 
 # Check if version is provided
 if [ -z "$VERSION" ]; then
-    echo "❌ Error: Version not provided"
+    echo "[ERROR] Version not provided"
     echo "Usage: $0 <version>"
     echo "Example: $0 1.0.0"
     exit 1
@@ -20,146 +20,146 @@ fi
 
 # Validate version format
 if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
-    echo "❌ Invalid version format: ${VERSION}"
+    echo "[ERROR] Invalid version format: ${VERSION}"
     echo "Expected format: X.Y.Z or X.Y.Z-prerelease"
     exit 1
 fi
 
-echo "📦 Checking version consistency..."
+echo "[CHECK] Checking version consistency..."
 echo ""
 
 # Check tauri.conf.json
 CONF_VERSION=$(jq -r '.version' src-tauri/tauri.conf.json)
 if [ "$CONF_VERSION" = "$VERSION" ]; then
-    echo "✅ tauri.conf.json: ${CONF_VERSION}"
+    echo "[OK] tauri.conf.json: ${CONF_VERSION}"
 else
-    echo "❌ tauri.conf.json: ${CONF_VERSION} (expected ${VERSION})"
+    echo "[FAIL] tauri.conf.json: ${CONF_VERSION} (expected ${VERSION})"
     ERRORS=$((ERRORS + 1))
 fi
 
 # Check Cargo.toml
 CARGO_VERSION=$(grep '^version' src-tauri/Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
 if [ "$CARGO_VERSION" = "$VERSION" ]; then
-    echo "✅ Cargo.toml: ${CARGO_VERSION}"
+    echo "[OK] Cargo.toml: ${CARGO_VERSION}"
 else
-    echo "❌ Cargo.toml: ${CARGO_VERSION} (expected ${VERSION})"
+    echo "[FAIL] Cargo.toml: ${CARGO_VERSION} (expected ${VERSION})"
     ERRORS=$((ERRORS + 1))
 fi
 
 # Check package.json
 PKG_VERSION=$(jq -r '.version' package.json)
 if [ "$PKG_VERSION" = "$VERSION" ]; then
-    echo "✅ package.json: ${PKG_VERSION}"
+    echo "[OK] package.json: ${PKG_VERSION}"
 else
-    echo "❌ package.json: ${PKG_VERSION} (expected ${VERSION})"
+    echo "[FAIL] package.json: ${PKG_VERSION} (expected ${VERSION})"
     ERRORS=$((ERRORS + 1))
 fi
 
 echo ""
-echo "🔧 Checking build tools..."
+echo "[CHECK] Checking build tools..."
 echo ""
 
 # Check Rust
 if command -v cargo &> /dev/null; then
-    echo "✅ cargo: $(cargo --version)"
+    echo "[OK] cargo: $(cargo --version)"
 else
-    echo "❌ cargo not found"
+    echo "[FAIL] cargo not found"
     ERRORS=$((ERRORS + 1))
 fi
 
 # Check Node.js
 if command -v node &> /dev/null; then
-    echo "✅ node: $(node --version)"
+    echo "[OK] node: $(node --version)"
 else
-    echo "❌ node not found"
+    echo "[FAIL] node not found"
     ERRORS=$((ERRORS + 1))
 fi
 
 # Check npm
 if command -v npm &> /dev/null; then
-    echo "✅ npm: $(npm --version)"
+    echo "[OK] npm: $(npm --version)"
 else
-    echo "❌ npm not found"
+    echo "[FAIL] npm not found"
     ERRORS=$((ERRORS + 1))
 fi
 
 # Check Tauri CLI
 if command -v npx &> /dev/null && npx tauri --version &> /dev/null; then
-    echo "✅ tauri cli: $(npx tauri --version)"
+    echo "[OK] tauri cli: $(npx tauri --version)"
 else
-    echo "❌ tauri cli not found"
+    echo "[FAIL] tauri cli not found"
     ERRORS=$((ERRORS + 1))
 fi
 
 echo ""
-echo "🔍 Running code quality checks..."
+echo "[CHECK] Running code quality checks..."
 echo ""
 
 # Check cargo fmt
 echo "Running cargo fmt --check..."
 if (cd src-tauri && cargo fmt --all --check 2>/dev/null); then
-    echo "✅ cargo fmt: passed"
+    echo "[OK] cargo fmt: passed"
 else
-    echo "❌ cargo fmt: failed"
+    echo "[FAIL] cargo fmt: failed"
     ERRORS=$((ERRORS + 1))
 fi
 
 # Check cargo clippy
 echo "Running cargo clippy..."
 if (cd src-tauri && cargo clippy --all-targets --all-features -- -D warnings 2>/dev/null); then
-    echo "✅ cargo clippy: passed"
+    echo "[OK] cargo clippy: passed"
 else
-    echo "❌ cargo clippy: failed"
+    echo "[FAIL] cargo clippy: failed"
     ERRORS=$((ERRORS + 1))
 fi
 
 # Check TypeScript
 echo "Running TypeScript check..."
 if npx tsc -b --noEmit 2>/dev/null; then
-    echo "✅ TypeScript: passed"
+    echo "[OK] TypeScript: passed"
 else
-    echo "❌ TypeScript: failed"
+    echo "[FAIL] TypeScript: failed"
     ERRORS=$((ERRORS + 1))
 fi
 
 # Check frontend build
 echo "Running frontend build..."
 if npm run build 2>/dev/null; then
-    echo "✅ Frontend build: passed"
+    echo "[OK] Frontend build: passed"
 else
-    echo "❌ Frontend build: failed"
+    echo "[FAIL] Frontend build: failed"
     ERRORS=$((ERRORS + 1))
 fi
 
 echo ""
-echo "📋 Checking documentation..."
+echo "[CHECK] Checking documentation..."
 echo ""
 
 # Check CHANGELOG.md
 if [ -f "CHANGELOG.md" ]; then
     if grep -q "$VERSION" CHANGELOG.md; then
-        echo "✅ CHANGELOG.md: contains version ${VERSION}"
+        echo "[OK] CHANGELOG.md: contains version ${VERSION}"
     else
-        echo "⚠️  CHANGELOG.md: does not contain version ${VERSION}"
+        echo "[WARN] CHANGELOG.md: does not contain version ${VERSION}"
     fi
 else
-    echo "⚠️  CHANGELOG.md: not found"
+    echo "[WARN] CHANGELOG.md: not found"
 fi
 
 # Check RELEASING.md
 if [ -f "RELEASING.md" ]; then
-    echo "✅ RELEASING.md: exists"
+    echo "[OK] RELEASING.md: exists"
 else
-    echo "❌ RELEASING.md: not found"
+    echo "[FAIL] RELEASING.md: not found"
     ERRORS=$((ERRORS + 1))
 fi
 
 echo ""
-echo "📊 Summary..."
+echo "[SUMMARY] ..."
 echo ""
 
 if [ $ERRORS -eq 0 ]; then
-    echo "✅ All checks passed! Ready to release v${VERSION}"
+    echo "[PASS] All checks passed! Ready to release v${VERSION}"
     echo ""
     echo "Next steps:"
     echo "  1. git add -A"
@@ -167,6 +167,6 @@ if [ $ERRORS -eq 0 ]; then
     echo "  3. git tag -a v${VERSION} -m 'Release v${VERSION}'"
     echo "  4. git push origin main && git tag v${VERSION}"
 else
-    echo "❌ ${ERRORS} error(s) found. Please fix before releasing."
+    echo "[FAIL] ${ERRORS} error(s) found. Please fix before releasing."
     exit 1
 fi

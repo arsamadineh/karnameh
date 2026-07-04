@@ -2,7 +2,7 @@
 
 This document is the **single source of truth** for releasing new versions of KarNama. All agents (AI or human) MUST follow these procedures exactly.
 
-## 📋 Release Checklist
+## Release Checklist
 
 ### Pre-Release (Mandatory)
 
@@ -34,7 +34,7 @@ Follow [Semantic Versioning](https://semver.org/):
 - `x.Y.0` → New features (backward compatible)
 - `x.y.Z` → Bug fixes only
 
-## 🚀 Release Process
+## Release Process
 
 ### Step 1: Update Version Numbers
 
@@ -101,7 +101,7 @@ git push origin "v${VERSION}"
 3. Verify the release notes are correct
 4. Test downloads work
 
-## 🔄 Auto-Update System
+## Auto-Update System
 
 ### How It Works
 
@@ -193,7 +193,7 @@ sudo apt-get install nsis
 npm run tauri build
 ```
 
-## 📱 Android Build
+## Android Build
 
 ### Requirements
 
@@ -217,7 +217,7 @@ APKs are built per ABI:
 - `karnameh-android-x86-debug.apk` (emulators)
 - `karnameh-android-x86_64-debug.apk` (64-bit emulators)
 
-## 🔐 Security
+## Security
 
 ### Signing Keys
 
@@ -239,7 +239,7 @@ APKs are built per ABI:
 3. Only installs if signature is valid
 4. Public key is in `tauri.conf.json`
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -259,14 +259,14 @@ Enable verbose logging:
 RUST_LOG=debug npm run tauri dev
 ```
 
-## 📚 References
+## References
 
 - [Tauri Distribution Guide](https://v2.tauri.app/distribute/)
 - [Tauri Updater Plugin](https://v2.tauri.app/plugin/updater/)
 - [NSIS Documentation](https://nsis.sourceforge.io/)
 - [GitHub Actions](https://docs.github.com/en/actions)
 
-## 📞 Support
+## Support
 
 For issues with the release process:
 1. Check this document first

@@ -128,10 +128,10 @@ karnameh/
 4. Push کنید - GitHub Actions به‌صورت خودکار برای تمام پلتفرم‌ها build می‌کند
 
 **پلتفرم‌های build خودکار:**
-- 🪟 Windows: NSIS installer (`.exe`) + MSI (`.msi`)
-- 🍎 macOS: DMG (`.dmg`) برای Intel و Apple Silicon
-- 🐧 Linux: Debian (`.deb`) + AppImage
-- 📱 Android: APK برای تمام معماری‌ها
+- Windows: NSIS installer (`.exe`) + MSI (`.msi`)
+- macOS: DMG (`.dmg`) برای Intel و Apple Silicon
+- Linux: Debian (`.deb`) + AppImage
+- Android: APK برای تمام معماری‌ها
 
 ---
 

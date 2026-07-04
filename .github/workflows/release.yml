@@ -57,11 +57,11 @@ jobs:
             echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
           fi
 
-          echo "📦 Releasing version: ${VERSION} (tag: ${TAG_NAME})"
+          echo "[RELEASE] Releasing version: ${VERSION} (tag: ${TAG_NAME})"
 
           # Validate version format
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
-            echo "❌ Invalid version format: ${VERSION}"
+            echo "[ERROR] Invalid version format: ${VERSION}"
             echo "Expected format: X.Y.Z or X.Y.Z-prerelease"
             exit 1
           fi
@@ -71,7 +71,7 @@ jobs:
           CARGO_VERSION=$(grep '^version' src-tauri/Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
           PKG_VERSION=$(jq -r '.version' package.json)
 
-          echo "📋 Version check:"
+          echo "[CHECK] Version check:"
           echo "  - tauri.conf.json: ${CONF_VERSION}"
           echo "  - Cargo.toml: ${CARGO_VERSION}"
           echo "  - package.json: ${PKG_VERSION}"

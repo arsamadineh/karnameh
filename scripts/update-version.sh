@@ -20,7 +20,7 @@ if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
     exit 1
 fi
 
-echo "📦 Updating version to ${VERSION}..."
+echo "[UPDATE] Updating version to ${VERSION}..."
 
 # Update tauri.conf.json
 echo "Updating src-tauri/tauri.conf.json..."
