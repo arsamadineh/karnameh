@@ -51,7 +51,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "RWRpplz3si8oqUGSXsCBbKZuaykamOxjx3A6ON1A7G4c5g9PtgT+EzsJ",
+      "pubkey": "RWSYy5zwKuXE5Nit1x9mliFhb6lGNpffS0sfXC3UMTt6B/5CFeoPUmsV",
       "endpoints": [
         "https://github.com/arsamadineh/karnameh/releases/latest/download/latest.json"
       ]
