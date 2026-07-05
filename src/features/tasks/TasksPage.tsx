@@ -6,6 +6,7 @@ import { taskRefreshTrigger, triggerTaskRefresh } from '../../store';
 import { Modal } from '../../components/ui/Modal';
 import { IconLightning, IconTrash } from '../../components/ui/Icons';
 import { CustomSelect } from '../../components/ui/CustomSelect';
+import { JalaliDatePicker } from '../../components/ui/JalaliDatePicker';
 
 const TasksPage: Component = () => {
   // Sync resource refetching with global trigger signals
@@ -242,7 +243,7 @@ const TasksPage: Component = () => {
                       }}
                       style={{ color: 'var(--color-success)', 'font-weight': 600 }}
                     >
-                      تکمیل ✓
+                      تکمیل
                     </button>
                   </div>
                 </div>
@@ -352,7 +353,7 @@ const TasksPage: Component = () => {
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
                   <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مهلت انجام</label>
-                  <input type="date" value={dueDate()} onChange={e => setDueDate(e.currentTarget.value)} class="premium-input" style={{ 'color-scheme': 'dark' }} />
+                  <JalaliDatePicker value={dueDate()} onChange={setDueDate} placeholder="انتخاب مهلت انجام..." />
                 </div>
               </div>
 
@@ -440,7 +441,7 @@ const TasksPage: Component = () => {
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
                 <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مهلت انجام</label>
-                <input type="date" value={dueDate()} onChange={e => setDueDate(e.currentTarget.value)} class="premium-input" style={{ 'color-scheme': 'dark' }} />
+                <JalaliDatePicker value={dueDate()} onChange={setDueDate} placeholder="انتخاب مهلت انجام..." />
               </div>
 
               <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>

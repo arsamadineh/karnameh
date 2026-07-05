@@ -8,6 +8,7 @@ import {
   setSelectedClientId, 
   setSelectedProjectId 
 } from '../../store';
+import { IconSearch, IconClients, IconProjects, IconTasks } from '../ui/Icons';
 
 interface SearchResult {
   id: string;
@@ -206,7 +207,7 @@ const SearchPalette: Component = () => {
             padding: 'var(--space-4) var(--space-5)',
             'border-bottom': '1px solid var(--color-border)'
           }}>
-            <span style={{ 'font-size': 'var(--text-h1-size)' }}>🔍</span>
+            <IconSearch style={{ width: '22px', height: '22px', color: 'var(--color-text-muted)', 'flex-shrink': '0' }} />
             <input 
               ref={inputRef}
               type="text"
@@ -243,7 +244,7 @@ const SearchPalette: Component = () => {
               when={filteredResults().length > 0} 
               fallback={
                 <div style={{ padding: 'var(--space-8) 0', 'text-align': 'center', color: 'var(--color-text-muted)' }}>
-                  موردی یافت نشد 🧐
+                  موردی یافت نشد
                 </div>
               }
             >
@@ -278,7 +279,12 @@ const SearchPalette: Component = () => {
                             'justify-content': 'center',
                             'font-size': 'var(--text-sm-size)'
                           }}>
-                            {item.type === 'client' ? '👥' : item.type === 'project' ? '📁' : '✅'}
+                            {item.type === 'client'
+                              ? <IconClients style={{ width: '16px', height: '16px', color: item.color || 'var(--color-primary)' }} />
+                              : item.type === 'project'
+                              ? <IconProjects style={{ width: '16px', height: '16px', color: item.color || 'var(--color-success)' }} />
+                              : <IconTasks style={{ width: '16px', height: '16px', color: item.color || 'var(--color-warning)' }} />
+                            }
                           </div>
                           <div>
                             <div style={{ 'font-weight': 600, color: isSelected() ? 'var(--color-primary)' : 'var(--color-text)', 'font-size': 'var(--text-body-size)' }}>

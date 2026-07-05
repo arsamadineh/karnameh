@@ -129,8 +129,8 @@
   --layout-card-padding:       clamp(var(--space-3), var(--space-2) + 1.2vw, var(--space-5));
   --layout-item-height:        48px;
   --layout-gap:                var(--space-4);
-  --layout-sidebar-width:      280px;
-  --layout-sidebar-collapsed:  72px;
+  --layout-sidebar-width:      240px;
+  --layout-sidebar-collapsed:  64px;
   --layout-max-width:          1440px;
 
   /* ─── BORDER RADIUS ─── */

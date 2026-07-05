@@ -6,6 +6,7 @@ import { selectedProjectId, setSelectedProjectId, projectRefreshTrigger, trigger
 import { Modal } from '../../components/ui/Modal';
 import { IconEdit, IconTrash, IconProjects } from '../../components/ui/Icons';
 import { CustomSelect } from '../../components/ui/CustomSelect';
+import { JalaliDatePicker } from '../../components/ui/JalaliDatePicker';
 
 const ProjectsPage: Component = () => {
   // Sync resource refetching with global trigger signals
@@ -348,7 +349,7 @@ const ProjectsPage: Component = () => {
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
                   <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مهلت تحویل</label>
-                  <input type="date" value={deadline()} onChange={e => setDeadline(e.currentTarget.value)} class="premium-input" style={{ 'color-scheme': 'dark' }} />
+                  <JalaliDatePicker value={deadline()} onChange={setDeadline} placeholder="انتخاب مهلت تحویل..." />
                 </div>
               </div>
 
@@ -464,7 +465,7 @@ const ProjectsPage: Component = () => {
                 </div>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-1)' }}>
                   <label style={{ 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>مهلت تحویل</label>
-                  <input type="date" value={deadline()} onChange={e => setDeadline(e.currentTarget.value)} class="premium-input" style={{ 'color-scheme': 'dark' }} />
+                  <JalaliDatePicker value={deadline()} onChange={setDeadline} placeholder="انتخاب مهلت تحویل..." />
                 </div>
               </div>
 
@@ -583,37 +584,117 @@ const ProjectsPage: Component = () => {
 
                   {/* Left side: Budgets & Deadlines */}
                   <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-6)' }}>
-                    {/* Financial card */}
-                    <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
-                      <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 600 }}>وضعیت مالی</h4>
-                      
-                      <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-3)' }}>
-                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': 'var(--text-body-size)' }}>
-                          <span style={{ color: 'var(--color-text-muted)' }}>بودجه کل:</span>
-                          <span style={{ 'font-weight': 700, color: 'var(--color-success)' }}>
-                            {formatPersianNumber(proj.budget.toLocaleString())} ریال
-                          </span>
-                        </div>
-                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': 'var(--text-body-size)' }}>
-                          <span style={{ color: 'var(--color-text-muted)' }}>هزینه شده:</span>
-                          <span style={{ 'font-weight': 700, color: 'var(--color-warning)' }}>
-                            {formatPersianNumber(proj.spent.toLocaleString())} ریال
-                          </span>
-                        </div>
-                        <div style={{ 
-                          width: '100%', height: '6px', 'background-color': 'var(--color-surface-hover)', 
-                          'border-radius': 'var(--radius-round)', overflow: 'hidden', 'margin-top': 'var(--space-2)' 
-                        }}>
+                    {/* Financial card — وضعیت مالی */}
+                    {(() => {
+                      const budgetVal = proj.budget || 0;
+                      const spentVal = proj.spent || 0;
+                      const remaining = budgetVal - spentVal;
+                      const pct = budgetVal > 0 ? Math.round((spentVal / budgetVal) * 100) : 0;
+                      const isOverBudget = spentVal > budgetVal && budgetVal > 0;
+                      const isOnTrack = pct <= 75;
+                      const barColor = isOverBudget ? 'var(--color-danger)' : pct > 75 ? 'var(--color-warning)' : 'var(--color-success)';
+
+                      return (
+                        <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>
+                          <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 600, display: 'flex', 'align-items': 'center', gap: 'var(--space-2)' }}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>
+                            وضعیت مالی
+                          </h4>
+                          
+                          {/* Summary row */}
                           <div style={{
-                            height: '100%',
-                            width: `${Math.min(100, proj.budget > 0 ? (proj.spent / proj.budget) * 100 : 0)}%`,
-                            'background-color': 'var(--color-warning)',
-                            'border-radius': 'var(--radius-round)',
-                            transition: 'width 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
-                          }} />
+                            display: 'grid',
+                            'grid-template-columns': '1fr 1fr 1fr',
+                            gap: 'var(--space-3)',
+                            'text-align': 'center'
+                          }}>
+                            <div style={{
+                              padding: 'var(--space-3)',
+                              'background-color': 'rgba(34,197,94,0.06)',
+                              border: '1px solid rgba(34,197,94,0.12)',
+                              'border-radius': 'var(--radius-md)'
+                            }}>
+                              <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)', 'margin-bottom': '4px', display: 'block' }}>بودجه کل</span>
+                              <span style={{ 'font-weight': 700, color: 'var(--color-success)', 'font-size': 'var(--text-body-size)' }}>
+                                {formatPersianNumber(budgetVal.toLocaleString())}
+                              </span>
+                              <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)', display: 'block' }}>ریال</span>
+                            </div>
+                            <div style={{
+                              padding: 'var(--space-3)',
+                              'background-color': 'rgba(232,156,44,0.06)',
+                              border: '1px solid rgba(232,156,44,0.12)',
+                              'border-radius': 'var(--radius-md)'
+                            }}>
+                              <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)', 'margin-bottom': '4px', display: 'block' }}>هزینه شده</span>
+                              <span style={{ 'font-weight': 700, color: 'var(--color-warning)', 'font-size': 'var(--text-body-size)' }}>
+                                {formatPersianNumber(spentVal.toLocaleString())}
+                              </span>
+                              <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)', display: 'block' }}>ریال</span>
+                            </div>
+                            <div style={{
+                              padding: 'var(--space-3)',
+                              'background-color': isOverBudget ? 'rgba(239,68,68,0.06)' : 'rgba(20,93,162,0.06)',
+                              border: `1px solid ${isOverBudget ? 'rgba(239,68,68,0.12)' : 'rgba(20,93,162,0.12)'}`,
+                              'border-radius': 'var(--radius-md)'
+                            }}>
+                              <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)', 'margin-bottom': '4px', display: 'block' }}>{isOverBudget ? 'بیش‌ازحد' : 'باقیمانده'}</span>
+                              <span style={{ 'font-weight': 700, color: isOverBudget ? 'var(--color-danger)' : 'var(--color-primary)', 'font-size': 'var(--text-body-size)' }}>
+                                {formatPersianNumber(Math.abs(remaining).toLocaleString())}
+                              </span>
+                              <span style={{ 'font-size': 'var(--text-xs-size)', color: 'var(--color-text-muted)', display: 'block' }}>ریال</span>
+                            </div>
+                          </div>
+
+                          {/* Progress bar */}
+                          <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)' }}>
+                            <div style={{ display: 'flex', 'justify-content': 'space-between', 'font-size': 'var(--text-xs-size)' }}>
+                              <span style={{ color: 'var(--color-text-muted)' }}>درصد مصرف بودجه</span>
+                              <span style={{ 'font-weight': 700, color: barColor }}>{formatPersianNumber(pct)}٪</span>
+                            </div>
+                            <div style={{ 
+                              width: '100%', height: '8px', 'background-color': 'var(--color-surface-2)', 
+                              'border-radius': 'var(--radius-round)', overflow: 'hidden'
+                            }}>
+                              <div style={{
+                                height: '100%',
+                                width: `${Math.min(100, pct)}%`,
+                                'background-color': barColor,
+                                'border-radius': 'var(--radius-round)',
+                                transition: 'width 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease',
+                                'box-shadow': `0 0 8px ${barColor}`
+                              }} />
+                            </div>
+                          </div>
+
+                          {/* Status indicator */}
+                          <div style={{
+                            display: 'flex',
+                            'align-items': 'center',
+                            gap: 'var(--space-2)',
+                            padding: 'var(--space-2) var(--space-3)',
+                            'border-radius': 'var(--radius-md)',
+                            'background-color': isOverBudget ? 'var(--color-danger-muted)' : isOnTrack ? 'var(--color-success-muted)' : 'var(--color-warning-muted)',
+                            border: `1px solid ${isOverBudget ? 'var(--color-danger)' : isOnTrack ? 'var(--color-success)' : 'var(--color-warning)'}20`
+                          }}>
+                            <div style={{
+                              width: '8px', height: '8px', 'border-radius': '50%',
+                              'background-color': isOverBudget ? 'var(--color-danger)' : isOnTrack ? 'var(--color-success)' : 'var(--color-warning)',
+                              'box-shadow': `0 0 6px ${isOverBudget ? 'var(--color-danger)' : isOnTrack ? 'var(--color-success)' : 'var(--color-warning)'}`
+                            }} />
+                            <span style={{
+                              'font-size': 'var(--text-xs-size)',
+                              'font-weight': 600,
+                              color: isOverBudget ? 'var(--color-danger)' : isOnTrack ? 'var(--color-success)' : 'var(--color-warning)'
+                            }}>
+                              {isOverBudget ? 'بودجه رد شده! هزینه بیش از بودجه تعیین‌شده است' : isOnTrack ? 'بودجه در مسیر صحیح قرار دارد' : 'هشدار: نزدیک به پایان بودجه'}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      );
+                    })()}
 
                     {/* Deadline card */}
                     <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}>

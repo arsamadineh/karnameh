@@ -19,7 +19,7 @@ const DashboardPage: Component = () => {
       {/* Welcome message */}
       <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
         <div>
-          <h2 class="stat-title" style={{ 'margin-bottom': 'var(--space-2)' }}>سلام {userName() || 'کاربر'} 👋</h2>
+          <h2 class="stat-title" style={{ 'margin-bottom': 'var(--space-2)' }}>سلام {userName() || 'کاربر'}</h2>
           <p style={{ color: 'var(--color-text-muted)', 'font-size': 'var(--text-body-size)' }}>امروز {formatJalaliDate(new Date())} است.</p>
         </div>
       </div>

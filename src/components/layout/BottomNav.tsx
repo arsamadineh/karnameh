@@ -25,62 +25,57 @@ const BottomNav: Component<BottomNavProps> = (props) => {
     { id: 'settings', label: 'تنظیمات', icon: IconSettings },
   ];
 
-  // On very narrow phones, hide labels so all six items fit comfortably.
   const showLabels = () => !isCompactNav();
 
   return (
-    <nav class="bottom-nav">
-      <For each={menuItems}>
-        {(item) => {
-          const isActive = () => props.currentView === item.id;
-          const Icon = item.icon;
-          return (
-            <button
-              onClick={() => props.setView(item.id)}
-              class="bottom-nav-btn"
-              aria-label={item.label}
-              aria-current={isActive() ? 'page' : undefined}
-              onMouseEnter={(e) => {
-                if (!isActive()) e.currentTarget.style.transform = 'scale(1.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-              onMouseDown={(e) => {
-                e.currentTarget.style.transform = 'scale(0.95)';
-              }}
-              onMouseUp={(e) => {
-                e.currentTarget.style.transform = isActive() ? 'scale(1)' : 'scale(1.05)';
-              }}
-            >
-              {/* Active Indicator Pill (Material Design 3 style) */}
-              <div
-                class="bottom-nav-pill"
-                classList={{ 'is-active': isActive() }}
-              />
+    <nav class="bottom-nav-glass">
+      <div class="bottom-nav-glass-inner">
+        <For each={menuItems}>
+          {(item) => {
+            const isActive = () => props.currentView === item.id;
+            const Icon = item.icon;
+            return (
+              <button
+                onClick={() => props.setView(item.id)}
+                class="bottom-nav-glass-btn"
+                aria-label={item.label}
+                aria-current={isActive() ? 'page' : undefined}
+              >
+                {/* Active glow blob */}
+                <Show when={isActive()}>
+                  <div class="bottom-nav-glass-blob" />
+                </Show>
 
-              <Icon
-                class="bottom-nav-icon"
-                style={{
-                  color: isActive() ? 'var(--color-primary)' : 'var(--color-text-muted)'
-                }}
-              />
+                <div class="bottom-nav-glass-icon-wrap" style={{
+                  'background': isActive() ? 'var(--color-secondary-muted)' : 'transparent',
+                  'box-shadow': isActive() ? '0 2px 12px var(--color-secondary-glow)' : 'none',
+                }}>
+                  <Icon
+                    class="bottom-nav-glass-icon"
+                    style={{
+                      color: isActive() ? 'var(--color-secondary)' : 'var(--color-text-muted)',
+                      'transform': isActive() ? 'scale(1.1)' : 'scale(1)',
+                    }}
+                  />
+                </div>
 
-              <Show when={showLabels()}>
-                <span
-                  class="bottom-nav-label"
-                  style={{
-                    'font-weight': isActive() ? 700 : 500,
-                    color: isActive() ? 'var(--color-text)' : 'var(--color-text-muted)'
-                  }}
-                >
-                  {item.label}
-                </span>
-              </Show>
-            </button>
-          );
-        }}
-      </For>
+                <Show when={showLabels()}>
+                  <span
+                    class="bottom-nav-glass-label"
+                    style={{
+                      'font-weight': isActive() ? 700 : 500,
+                      color: isActive() ? 'var(--color-secondary)' : 'var(--color-text-muted)',
+                      opacity: isActive() ? 1 : 0.7,
+                    }}
+                  >
+                    {item.label}
+                  </span>
+                </Show>
+              </button>
+            );
+          }}
+        </For>
+      </div>
     </nav>
   );
 };

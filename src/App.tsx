@@ -7,6 +7,7 @@ import SearchPalette from './components/layout/SearchPalette';
 import Updater from './components/ui/Updater';
 import WelcomeModal from './components/ui/WelcomeModal';
 import UpdateChangelog from './components/ui/UpdateChangelog';
+import ContextMenu from './components/ui/ContextMenu';
 import DashboardPage from './features/dashboard/DashboardPage';
 import ClientsPage from './features/clients/ClientsPage';
 import ProjectsPage from './features/projects/ProjectsPage';
@@ -35,6 +36,9 @@ const App: Component = () => {
 
       {/* Search Palette Overlay */}
       <SearchPalette />
+
+      {/* Custom Persian Context Menu */}
+      <ContextMenu />
 
       {/* Desktop: sidebar + content side-by-side. Mobile/Tablet: stacked with bottom nav. */}
       <div classList={{ 'app-shell': true, 'has-sidebar': showSidebar() }} style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>

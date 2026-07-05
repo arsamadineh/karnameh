@@ -2,7 +2,7 @@ import { createSignal, Show, onCleanup } from 'solid-js';
 import type { Component } from 'solid-js';
 import { setSearchPaletteOpen } from '../../store';
 import { userName } from '../../store';
-import { IconSearch, IconLogo, IconUser, IconLogOut } from '../ui/Icons';
+import { IconSearch, IconUser, IconLogOut } from '../ui/Icons';
 
 interface HeaderProps {
   title: string;
@@ -46,7 +46,6 @@ const Header: Component<HeaderProps> = (props) => {
       'z-index': 10
     }}>
       <div style={{ display: 'flex', 'align-items': 'center', gap: 'var(--space-3)' }}>
-        <IconLogo style={{ width: '28px', height: '28px' }} />
         <h1 style={{ 'font-size': 'var(--text-h1-size)', 'font-weight': 700, color: 'var(--color-text)', 'margin-right': '4px' }}>
           {viewTitles[props.title] || props.title}
         </h1>

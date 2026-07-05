@@ -7,7 +7,6 @@ import {
   IconTasks, 
   IconChecklists, 
   IconSettings,
-  IconLogo,
   IconChevronRight,
   IconChevronLeft,
   IconUser,
@@ -55,7 +54,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
       'border-right': '1px solid var(--color-border)',
       display: 'flex',
       'flex-direction': 'column',
-      padding: 'var(--space-5) 0',
+      padding: 'var(--space-4) 0',
       'justify-content': 'space-between',
       'box-shadow': 'var(--shadow-sm)',
       transition: 'width 300ms cubic-bezier(0.4, 0, 0.2, 1)',
@@ -66,23 +65,43 @@ const Sidebar: Component<SidebarProps> = (props) => {
     }}>
       {/* Top section: logo + nav */}
       <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-6)' }}>
-        {/* Logo + Collapse toggle */}
+        {/* Logo + Brand + Collapse toggle */}
         <div style={{ 
-          padding: collapsed() ? '0 var(--space-2)' : '0 var(--space-5)', 
+          padding: collapsed() ? '0 var(--space-2)' : '0 var(--space-4)', 
           display: 'flex', 
           'flex-direction': 'column',
-          'align-items': 'center', 
+          'align-items': collapsed() ? 'center' : 'flex-start', 
           gap: 'var(--space-3)',
           transition: 'padding 300ms ease-in-out'
         }}>
-          <div style={{ display: 'flex', 'align-items': 'center', 'justify-content': 'center' }}>
-            <IconLogo />
+          <div style={{ 
+            display: 'flex', 
+            'align-items': 'center', 
+            gap: collapsed() ? '0' : 'var(--space-2-5)',
+            'justify-content': collapsed() ? 'center' : 'flex-start'
+          }}>
+            <img src="/favicon.png" alt="کارنامه" style={{ width: '28px', height: '28px', 'border-radius': 'var(--radius-sm)' }} />
+            <Show when={!collapsed()}>
+              <span style={{
+                'font-size': 'var(--text-h3-size)',
+                'font-weight': 700,
+                color: 'var(--color-text)',
+                'letter-spacing': '-0.03em',
+                'white-space': 'nowrap',
+                opacity: collapsed() ? 0 : 1,
+                'max-width': collapsed() ? '0px' : '200px',
+                overflow: 'hidden',
+                transition: 'opacity 200ms ease-in-out, max-width 200ms ease-in-out'
+              }}>
+                کارنامه
+              </span>
+            </Show>
           </div>
           <button 
             type="button"
             onClick={() => setIsSidebarCollapsed(!collapsed())}
             style={{
-              padding: '6px',
+              padding: '5px',
               'border-radius': 'var(--radius-md)',
               border: '1px solid var(--color-border)',
               display: 'flex',
@@ -90,10 +109,11 @@ const Sidebar: Component<SidebarProps> = (props) => {
               'justify-content': 'center',
               'background-color': 'rgba(255,255,255,0.01)',
               color: 'var(--color-text-muted)',
-              transition: 'all var(--transition-fast)'
+              transition: 'all var(--transition-fast)',
+              'align-self': collapsed() ? 'center' : 'flex-start'
             }}
           >
-            {collapsed() ? <IconChevronLeft style={{ width: '16px', height: '16px' }} /> : <IconChevronRight style={{ width: '16px', height: '16px' }} />}
+            {collapsed() ? <IconChevronLeft style={{ width: '14px', height: '14px' }} /> : <IconChevronRight style={{ width: '14px', height: '14px' }} />}
           </button>
         </div>
 
