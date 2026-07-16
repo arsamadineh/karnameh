@@ -22,34 +22,11 @@ const WelcomeModal: Component = () => {
   return (
     <Show when={isOpen()}>
       <Portal>
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          'z-index': 99999,
-          display: 'flex',
-          'align-items': 'center',
-          'justify-content': 'center',
-          padding: 'var(--space-4)'
-        }}>
-          {/* Backdrop */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            'background-color': 'rgba(0, 0, 0, 0.7)',
-            'backdrop-filter': 'blur(8px)',
-            'z-index': 0
-          }} />
-
+        <div class="modal-backdrop" style={{ 'z-index': 99999, 'background-color': 'rgba(0, 0, 0, 0.7)', 'backdrop-filter': 'blur(8px)', '-webkit-backdrop-filter': 'blur(8px)' }}>
           {/* Modal Content */}
-          <div class="premium-card animate-slide-up" style={{
-            position: 'relative',
-            width: '100%',
+          <div class="modal-sheet premium-card" style={{
             'max-width': '420px',
-            'z-index': 1,
             padding: 'var(--space-8)',
-            display: 'flex',
-            'flex-direction': 'column',
-            gap: 'var(--space-5)',
             'text-align': 'center'
           }}>
             <div style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)' }}>

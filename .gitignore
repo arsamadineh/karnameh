@@ -82,6 +82,11 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
+# --- Local key-generation scratch (NEVER commit) ---
+.pubkey.txt
+gen_key.py
+gen_key.log
+
 # --- Logs ---
 logs/
 *.log

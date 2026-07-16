@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "karnameh",
-  "version": "1.1.1",
+  "version": "1.2.3",
   "identifier": "com.karnameh.desktop",
   "build": {
     "frontendDist": "../dist",
@@ -36,6 +36,7 @@
       "icons/icon.ico"
     ],
     "createUpdaterArtifacts": false,
+    "fileAssociations": [],
     "windows": {
       "nsis": {
         "installMode": "both",
@@ -51,7 +52,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "RWSYy5zwKuXE5Nit1x9mliFhb6lGNpffS0sfXC3UMTt6B/5CFeoPUmsV",
+      "pubkey": "RWSIT/wKDeBGLRBqCYYaHHZWUCjg5dcK04az9Y3WJA0uEQ5G1Jxka6xm",
       "endpoints": [
         "https://github.com/arsamadineh/karnameh/releases/latest/download/latest.json"
       ]

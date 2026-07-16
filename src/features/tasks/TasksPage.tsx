@@ -307,19 +307,14 @@ const TasksPage: Component = () => {
 
       {/* MODAL 1: Add Task Dialog */}
       <Show when={isAdding()}>
-        <div 
+        <div
           onClick={() => setIsAdding(false)}
-          style={{
-            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-            'background-color': 'rgba(0,0,0,0.6)', 'backdrop-filter': 'var(--blur-md)',
-            'z-index': 1000, display: 'flex', 'align-items': 'center', 'justify-content': 'center'
-          }}
-          class="animate-fade-in"
+          class="modal-backdrop"
         >
-          <div 
+          <div
             onClick={e => e.stopPropagation()}
-            class="premium-card animate-slide-up"
-            style={{ width: '100%', 'max-width': '500px', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}
+            class="modal-sheet premium-card"
+            style={{ 'max-width': '500px' }}
           >
             <h3 style={{ 'font-size': 'var(--text-h2-size)', 'font-weight': 700 }}>ایجاد وظیفه جدید</h3>
             
@@ -373,19 +368,14 @@ const TasksPage: Component = () => {
 
       {/* MODAL 2: Edit Task Dialog */}
       <Show when={selectedTask()}>
-        <div 
+        <div
           onClick={() => setSelectedTask(null)}
-          style={{
-            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-            'background-color': 'rgba(0,0,0,0.6)', 'backdrop-filter': 'var(--blur-md)',
-            'z-index': 1000, display: 'flex', 'align-items': 'center', 'justify-content': 'center'
-          }}
-          class="animate-fade-in"
+          class="modal-backdrop"
         >
-          <div 
+          <div
             onClick={e => e.stopPropagation()}
-            class="premium-card animate-slide-up"
-            style={{ width: '100%', 'max-width': '500px', display: 'flex', 'flex-direction': 'column', gap: 'var(--space-4)' }}
+            class="modal-sheet premium-card"
+            style={{ 'max-width': '500px' }}
           >
             <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
               <h3 style={{ 'font-size': 'var(--text-h2-size)', 'font-weight': 700 }}>ویرایش وظیفه</h3>

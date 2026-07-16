@@ -11,34 +11,10 @@ const UpdateChangelog: Component = () => {
   return (
     <Show when={hasUpdate()}>
       <Portal>
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          'z-index': 99998,
-          display: 'flex',
-          'align-items': 'center',
-          'justify-content': 'center',
-          padding: 'var(--space-4)'
-        }}>
-          {/* Backdrop */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            'background-color': 'rgba(0, 0, 0, 0.6)',
-            'backdrop-filter': 'blur(4px)',
-            'z-index': 0
-          }} />
-
+        <div class="modal-backdrop" style={{ 'z-index': 99998 }}>
           {/* Modal Content */}
-          <div class="premium-card animate-slide-up" style={{
-            position: 'relative',
-            width: '100%',
-            'max-width': '440px',
-            'z-index': 1,
-            padding: 'var(--space-6)',
-            display: 'flex',
-            'flex-direction': 'column',
-            gap: 'var(--space-4)'
+          <div class="modal-sheet premium-card" style={{
+            'max-width': '440px'
           }}>
             {/* Header */}
             <div style={{ display: 'flex', 'align-items': 'center', gap: 'var(--space-3)' }}>

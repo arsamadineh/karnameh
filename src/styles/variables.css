@@ -133,6 +133,10 @@
   --layout-sidebar-collapsed:  64px;
   --layout-max-width:          1440px;
 
+  /* Bottom nav height used to offset floating elements (update toast) so they
+     never hide behind the mobile bottom navigation bar. */
+  --bottom-nav-h: 84px;
+
   /* ─── BORDER RADIUS ─── */
   --radius-xs:    3px;
   --radius-sm:    6px;

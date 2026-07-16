@@ -1,13 +1,12 @@
 import { createResource, createSignal } from 'solid-js';
 import type { Component } from 'solid-js';
-import { 
-  getClients, getProjects, getTasks, getChecklists, 
-  createClient, createProject, createTask, createChecklist 
+import {
+  getClients, getProjects, getTasks, getChecklists,
+  createClient, createProject, createTask, createChecklist
 } from '../../lib/tauri';
-import { check } from '@tauri-apps/plugin-updater';
-import { relaunch } from '@tauri-apps/plugin-process';
+import { checkForUpdate, downloadAndInstall } from '../../lib/updater';
 import { formatPersianNumber } from '../../lib/locale';
-import { currentTheme, setTheme } from '../../store';
+import { currentTheme, setTheme, getCurrentAppVersion } from '../../store';
 import { IconPalette, IconMoon, IconSun, IconDatabase, IconUpload, IconDownload, IconDashboard } from '../../components/ui/Icons';
 
 const SettingsPage: Component = () => {
@@ -23,20 +22,14 @@ const SettingsPage: Component = () => {
     setIsCheckingUpdate(true);
     setUpdateMessage('در حال بررسی بروزرسانی...');
     try {
-      const update = await check();
-      if (update?.available) {
-        setUpdateMessage(`نسخه ${update.version} در دسترس است. دانلود در پس‌زمینه آغاز شد...`);
-        let downloaded = 0;
-        let contentLength = 0;
-        await update.downloadAndInstall((event: any) => {
-          if (event.event === 'Started') contentLength = event.data.contentLength;
-          if (event.event === 'Progress') {
-            downloaded += event.data.chunkLength;
-            if (contentLength > 0) setUpdateMessage(`در حال دانلود: ${Math.round((downloaded / contentLength) * 100)}%`);
-          }
+      const update = await checkForUpdate();
+      if (update) {
+        setUpdateMessage(`نسخه ${update.version} در دسترس است. دانلود و نصب آغاز شد...`);
+        await downloadAndInstall(update, (pct) => {
+          setUpdateMessage(`در حال دانلود: ${pct}%`);
         });
         setUpdateMessage('بروزرسانی با موفقیت نصب شد. برنامه در حال شروع مجدد است...');
-        setTimeout(() => relaunch(), 1000);
+        // relaunch() ends the process; the message below is a fallback.
       } else {
         setUpdateMessage('شما از آخرین نسخه استفاده می‌کنید.');
       }
@@ -287,7 +280,7 @@ const SettingsPage: Component = () => {
       <div class="premium-card" style={{ display: 'flex', 'flex-direction': 'column', gap: 'var(--space-2)', 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)' }}>
         <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
           <div>
-            <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 700, color: 'var(--color-text)', margin: 0 }}>کارنامه - نسخه ۱.۰.۰-beta</h4>
+            <h4 style={{ 'font-size': 'var(--text-h3-size)', 'font-weight': 700, color: 'var(--color-text)', margin: 0 }}>کارنامه - نسخه {getCurrentAppVersion() || '۱.۲.۳'}</h4>
             <p style={{ margin: '4px 0 0 0' }}>فونت مورد استفاده: وزیرمتن (Vazirmatn) اثر صابر راستی‌کردار</p>
             <p style={{ margin: '4px 0 0 0' }}>© تمامی حقوق محفوظ است.</p>
           </div>

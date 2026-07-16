@@ -137,10 +137,35 @@ jobs:
       - name: Build desktop app
         id: build
         shell: bash
-        run: npx tauri build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
+        run: npx tauri build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --config '{"bundle":{"createUpdaterArtifacts":"v1-compatible"}}'
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      # Stage this target's updater manifest partial so the merge-updater job can
+      # combine every platform into one consolidated latest.json.
+      - name: Stage updater manifest partial
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/updater"
+          found=$(find src-tauri/target -path '*/bundle/latest.json' | head -1 || true)
+          if [ -n "$found" ]; then
+            cp "$found" "$RUNNER_TEMP/updater/latest-${{ matrix.target }}.json"
+            echo "Staged updater partial for ${{ matrix.target }}"
+          else
+            echo "::warning::No latest.json produced for ${{ matrix.target }} (updater artifacts missing?)"
+          fi
+
+      - name: Upload updater manifest partial
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: updater-partial-${{ matrix.target }}
+          path: ${{ runner.temp }}/updater/latest-${{ matrix.target }}.json
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Upload desktop bundles to release
         uses: softprops/action-gh-release@v2
@@ -153,8 +178,10 @@ jobs:
             src-tauri/target/*/release/bundle/**/*.app
             src-tauri/target/*/release/bundle/**/*.app.tar.gz
             src-tauri/target/*/release/bundle/**/*.msi
+            src-tauri/target/*/release/bundle/**/*.msi.zip
             src-tauri/target/*/release/bundle/**/*.exe
             src-tauri/target/*/release/bundle/**/*.nsis.zip
+            src-tauri/target/*/release/bundle/**/*.deb
             src-tauri/target/*/release/bundle/**/*.AppImage
             src-tauri/target/*/release/bundle/**/*.AppImage.tar.gz
           body: |
@@ -176,6 +203,47 @@ jobs:
             **Android** (in the same release)
             - `karnameh-arm64-v8a.apk` — most modern phones
             - `karnameh-armeabi-v7a.apk` — older 32-bit ARM devices
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Consolidates the per-target updater manifests (one per desktop platform)
+  # into a single latest.json and publishes it to the release so the in-app
+  # auto-updater can fetch it from the stable /latest/download/ permalink.
+  merge-updater:
+    name: Publish updater manifest (latest.json)
+    needs: build-desktop
+    permissions:
+      contents: write
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download updater manifest partials
+        uses: actions/download-artifact@v4
+        with:
+          pattern: updater-partial-*
+          path: updater-partials
+          merge-multiple: true
+
+      - name: Merge latest.json
+        shell: bash
+        run: |
+          shopt -s nullglob
+          PARTIALS=(updater-partials/*.json)
+          if [ ${#PARTIALS[@]} -eq 0 ]; then
+            echo "::error::No updater partials downloaded — updater artifacts were not produced."
+            exit 1
+          fi
+          echo "Merging ${PARTIALS[*]}"
+          node scripts/merge-updater.mjs "${PARTIALS[@]}"
+
+      - name: Upload latest.json to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.validate.outputs.tag_name }}
+          prerelease: ${{ needs.validate.outputs.is_prerelease }}
+          files: latest.json
+          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

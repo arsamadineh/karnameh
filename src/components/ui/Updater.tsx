@@ -1,116 +1,97 @@
-import { createSignal, onMount, Show } from 'solid-js';
+import { createSignal, onMount, Show, onCleanup } from 'solid-js';
 import type { Component } from 'solid-js';
-import { check } from '@tauri-apps/plugin-updater';
-import { relaunch } from '@tauri-apps/plugin-process';
+import { checkForUpdate, downloadAndInstall } from '../../lib/updater';
+
+const DISMISS_KEY = 'karnameh:update-dismissed-version';
 
 const Updater: Component = () => {
-  const [updateAvailable, setUpdateAvailable] = createSignal(false);
-  const [updateInfo, setUpdateInfo] = createSignal<{ version: string, body: string } | null>(null);
+  const [update, setUpdate] = createSignal<{ version: string; body: string } | null>(null);
   const [isUpdating, setIsUpdating] = createSignal(false);
-  const [updateProgress, setUpdateProgress] = createSignal(0);
-  const [updateError, setUpdateError] = createSignal('');
+  const [progress, setProgress] = createSignal(0);
+  const [error, setError] = createSignal('');
 
-  let updateInstance: any = null;
+  let timer: number | undefined;
 
-  onMount(async () => {
-    try {
-      console.log('Checking for updates...');
-      const update = await check();
-      if (update?.available) {
-        setUpdateAvailable(true);
-        setUpdateInfo({ version: update.version, body: update.body || '' });
-        updateInstance = update;
-      }
-    } catch (err) {
-      console.error('Failed to check for updates:', err);
+  const probe = async () => {
+    const u = await checkForUpdate();
+    if (!u) {
+      setUpdate(null);
+      return;
     }
+    // Skip a version the user already dismissed this session/install.
+    if (localStorage.getItem(DISMISS_KEY) === u.version) {
+      setUpdate(null);
+      return;
+    }
+    setUpdate({ version: u.version, body: u.body || '' });
+  };
+
+  onMount(() => {
+    // Check immediately, then re-check every 30 minutes while the app is open.
+    void probe();
+    timer = window.setInterval(() => void probe(), 30 * 60 * 1000);
+  });
+
+  onCleanup(() => {
+    if (timer) window.clearInterval(timer);
   });
 
   const handleUpdate = async () => {
-    if (!updateInstance) return;
+    const u = await checkForUpdate();
+    if (!u) return;
     setIsUpdating(true);
-    setUpdateError('');
+    setError('');
     try {
-      let downloaded = 0;
-      let contentLength = 0;
-      await updateInstance.downloadAndInstall((event: any) => {
-        switch (event.event) {
-          case 'Started':
-            contentLength = event.data.contentLength;
-            break;
-          case 'Progress':
-            downloaded += event.data.chunkLength;
-            if (contentLength > 0) {
-              setUpdateProgress(Math.round((downloaded / contentLength) * 100));
-            }
-            break;
-          case 'Finished':
-            break;
-        }
-      });
-      // Restart the app
-      await relaunch();
+      await downloadAndInstall(u, (pct) => setProgress(pct));
+      // relaunch() ends the process; code below only runs on failure.
     } catch (err: any) {
-      console.error('Failed to install update:', err);
-      setUpdateError(err.toString());
+      console.error('[updater] install failed:', err);
+      setError(typeof err?.toString === 'function' ? err.toString() : String(err));
       setIsUpdating(false);
     }
   };
 
+  const dismiss = () => {
+    const current = update();
+    if (current) localStorage.setItem(DISMISS_KEY, current.version);
+    setUpdate(null);
+  };
+
   return (
-    <Show when={updateAvailable()}>
-      <div class="animate-slide-up" style={{
-        position: 'fixed',
-        bottom: '100px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        'background-color': 'var(--color-surface-1)',
-        border: '1px solid var(--color-secondary)',
-        'border-radius': 'var(--radius-lg)',
-        padding: 'var(--space-4)',
-        'box-shadow': '0 8px 30px rgba(15, 23, 42, 0.5)',
-        'z-index': 9999,
-        width: '340px',
-        display: 'flex',
-        'flex-direction': 'column',
-        gap: 'var(--space-3)'
-      }}>
-        <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }}>
-          <h3 style={{ margin: 0, color: 'var(--color-text)', 'font-size': 'var(--text-h2-size)', 'font-weight': 'bold' }}>بروزرسانی جدید در دسترس است!</h3>
-          <span class="badge badge-primary" style={{ 'background-color': 'var(--color-secondary-muted)', color: 'var(--color-secondary)' }}>
-            v{updateInfo()?.version}
-          </span>
+    <Show when={update()}>
+      <div class="update-toast" role="alertdialog" aria-label="بروزرسانی جدید">
+        <div class="update-toast-inner">
+          <div class="update-toast-head">
+            <h3 class="update-toast-title">بروزرسانی جدید در دسترس است!</h3>
+            <span class="badge badge-primary update-toast-badge">v{update()?.version}</span>
+          </div>
+
+          <Show when={update()?.body}>
+            <p class="update-toast-body">{update()?.body}</p>
+          </Show>
+
+          <Show when={error()}>
+            <p class="update-toast-error">خطا: {error()}</p>
+          </Show>
+
+          <Show when={isUpdating()}>
+            <div class="update-toast-progress-track">
+              <div class="update-toast-progress-fill" style={{ width: `${progress()}%` }} />
+            </div>
+            <p class="update-toast-progress-label">در حال دانلود و نصب... {progress()}%</p>
+          </Show>
+
+          <Show when={!isUpdating()}>
+            <div class="update-toast-actions">
+              <button class="btn-primary update-toast-btn" onClick={handleUpdate}>
+                بروزرسانی و شروع مجدد
+              </button>
+              <button class="btn-secondary update-toast-btn" onClick={dismiss}>
+                بعداً
+              </button>
+            </div>
+          </Show>
         </div>
-        
-        <Show when={updateInfo()?.body}>
-          <p style={{ margin: 0, 'font-size': 'var(--text-sm-size)', color: 'var(--color-text-muted)', 'max-height': '60px', 'overflow-y': 'auto' }}>
-            {updateInfo()?.body}
-          </p>
-        </Show>
-
-        <Show when={updateError()}>
-          <p style={{ margin: 0, 'font-size': 'var(--text-sm-size)', color: 'var(--color-danger)' }}>خطا: {updateError()}</p>
-        </Show>
-
-        <Show when={isUpdating()}>
-          <div style={{ width: '100%', height: '6px', 'background-color': 'var(--color-surface-hover)', 'border-radius': '3px', overflow: 'hidden' }}>
-            <div style={{ width: `${updateProgress()}%`, height: '100%', 'background-color': 'var(--color-primary)', transition: 'width 0.2s' }} />
-          </div>
-          <p style={{ margin: 0, 'font-size': 'var(--text-xs-size)', 'text-align': 'center', color: 'var(--color-text-muted)' }}>
-            در حال دانلود و نصب... {updateProgress()}%
-          </p>
-        </Show>
-
-        <Show when={!isUpdating()}>
-          <div style={{ display: 'flex', gap: 'var(--space-2)', 'margin-top': 'var(--space-2)' }}>
-            <button class="btn-primary" style={{ flex: 1, 'justify-content': 'center' }} onClick={handleUpdate}>
-              بروزرسانی و شروع مجدد
-            </button>
-            <button class="btn-secondary" style={{ flex: 0.5, 'justify-content': 'center' }} onClick={() => setUpdateAvailable(false)}>
-              بعداً
-            </button>
-          </div>
-        </Show>
       </div>
     </Show>
   );
